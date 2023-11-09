@@ -24,7 +24,7 @@ class _DeseaseComPgeState extends State<DeseaseComPge> {
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop(MaterialPageRoute(
-                    builder: (context) => const HomePage(),
+                    builder: (context) => const BottomNavigatorBar(),
                   ));
                 },
                 icon: const Icon(Icons.arrow_back_ios)),

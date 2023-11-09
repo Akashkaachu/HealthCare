@@ -2,26 +2,42 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthcare/helper/sharedpreference.dart';
+import 'package:healthcare/hive/hive.dart';
+import 'package:healthcare/homescreen.dart';
+import 'package:healthcare/model/patientmodel.dart';
 import 'package:healthcare/profilepge.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePge extends StatefulWidget {
-  const EditProfilePge({super.key});
+  final PatientsDetails mydetails;
+  const EditProfilePge({super.key, required this.mydetails});
 
   @override
   State<EditProfilePge> createState() => _EditProfilePgeState();
 }
 
 final formkey = GlobalKey<FormState>();
-
-final nameEditingcontrollerr = TextEditingController();
-final emailEditingcontrollerr = TextEditingController();
-final addressEditingcontrollerr = TextEditingController();
-final tellUsEditingcontrollerr = TextEditingController();
+late TextEditingController nameEditingcontrollerr;
+late TextEditingController emailEditingcontrollerr;
+late TextEditingController addressEditingcontrollerr;
+late TextEditingController tellUsEditingcontrollerr;
 File? selectedImage;
 
 class _EditProfilePgeState extends State<EditProfilePge> {
   @override
+  void initState() {
+    nameEditingcontrollerr = TextEditingController(text: widget.mydetails.name);
+    emailEditingcontrollerr =
+        TextEditingController(text: widget.mydetails.email);
+    addressEditingcontrollerr =
+        TextEditingController(text: widget.mydetails.address);
+    tellUsEditingcontrollerr =
+        TextEditingController(text: widget.mydetails.about);
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -139,7 +155,7 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                               },
                               controller: nameEditingcontrollerr,
                               icons: Icons.person,
-                              name: "Name"),
+                              name: "name"),
                           const SizedBox(height: 15),
                           ProfileTextfldWidget(
                               validator: (value) {
@@ -187,7 +203,26 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                           Color(0xff7a73e7)),
                                 ),
                                 onPressed: () {
-                                  if (formkey.currentState!.validate()) ;
+                                  if (formkey.currentState!.validate()) {
+                                    final key = getKeyOfProfileSelfUpdate(
+                                        widget.mydetails);
+                                    final value = PatientsDetails(
+                                        name: nameEditingcontrollerr.text,
+                                        email: emailEditingcontrollerr.text,
+                                        password: widget.mydetails.password,
+                                        address: addressEditingcontrollerr.text,
+                                        about: tellUsEditingcontrollerr.text,
+                                        imagesrc: selectedImage!.path);
+                                    updateEditedProfile(value, key);
+                                    SharedPreferenceClass.saveuserEmailfun(
+                                        emailEditingcontrollerr.text);
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              BottomNavigatorBar(),
+                                        ),
+                                        (route) => false);
+                                  }
                                 },
                                 child: const Text("UPDATE")),
                           )
@@ -253,4 +288,10 @@ void showSnackBarImage(BuildContext c, String content, Color color) {
     content: Text(content),
     backgroundColor: color,
   ));
+}
+
+int getKeyOfProfileSelfUpdate(PatientsDetails patient) {
+  var box = Hive.box<PatientsDetails>('patient');
+  var key = box.keyAt(box.values.toList().indexOf(patient));
+  return key;
 }

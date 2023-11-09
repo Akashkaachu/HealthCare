@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/editprofile.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
+import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/login.dart';
+import 'package:healthcare/model/patientmodel.dart';
+import 'package:hive_flutter/adapters.dart';
 
 class ProfilePge extends StatefulWidget {
   const ProfilePge({super.key});
@@ -12,7 +16,17 @@ class ProfilePge extends StatefulWidget {
   State<ProfilePge> createState() => _ProfilePgeState();
 }
 
+String? email = '';
+PatientsDetails patient =
+    PatientsDetails(name: '', email: '', password: '', address: '', about: '');
+
 class _ProfilePgeState extends State<ProfilePge> {
+  @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -22,7 +36,7 @@ class _ProfilePgeState extends State<ProfilePge> {
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => BottomNavigatorBar(),
               ));
             },
             icon: const Icon(Icons.arrow_back_ios_new_rounded)),
@@ -46,9 +60,11 @@ class _ProfilePgeState extends State<ProfilePge> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
+                    backgroundColor: Color(0xff7a73e7),
                     radius: 60,
-                    backgroundImage:
-                        const AssetImage("assets/images/nullimage.jpg"),
+                    backgroundImage: selectedImage != null
+                        ? FileImage(selectedImage!)
+                        : null,
                     child: GestureDetector(
                       child: Stack(children: <Widget>[
                         Positioned(
@@ -63,11 +79,12 @@ class _ProfilePgeState extends State<ProfilePge> {
                                 backgroundColor: Colors.white,
                                 child: IconButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            const EditProfilePge(),
-                                      ));
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProfilePge(
+                                                    mydetails: patient,
+                                                  )));
                                     },
                                     icon: const Icon(
                                       Icons.edit,
@@ -83,14 +100,14 @@ class _ProfilePgeState extends State<ProfilePge> {
               const SizedBox(
                 height: 20,
               ),
-              const ListTileWidget(text: "Name", subtext: "Hai"),
-              const ListTileWidget(text: "Email", subtext: "akashvava29"),
-              const ListTileWidget(
+              ListTileWidget(text: "Name", subtext: patient.name),
+              ListTileWidget(text: "Email", subtext: patient.email),
+              ListTileWidget(
                   text: "Address",
-                  subtext: "Akash.k Njarakunnu house Elankur po Edakkad "),
-              const ListTileWidget(
+                  subtext: patient.address == null ? '' : patient.address!),
+              ListTileWidget(
                   text: "Tell Us About Yourself",
-                  subtext: "Hai, my name akash."),
+                  subtext: patient.about == null ? '' : patient.about!),
               const SizedBox(
                 height: 30,
               ),
@@ -154,6 +171,18 @@ class _ProfilePgeState extends State<ProfilePge> {
         ),
       ),
     );
+  }
+
+  void getUserDetails() async {
+    await SharedPreferenceClass.getEmailLoggedIN().then((value) {
+      setState(() {
+        email = value;
+      });
+    });
+    final OnePatientDetails = await getPatientsDetails(email!);
+    setState(() {
+      patient = OnePatientDetails!;
+    });
   }
 }
 

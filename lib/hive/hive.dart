@@ -12,11 +12,17 @@ Future<void> addPatientDetails(PatientsDetails rogi) async {
   box.add(rogi);
 }
 
-// Future<List<PatientsDetails>> getAllPatients() async {
-//   final box = await Hive.openBox<PatientsDetails>('patient');
-//   final patients = box.values.toList();
-//   return patients;
-// }
+Future<PatientsDetails?> getPatientsDetails(String email) async {
+  final box = await Hive.openBox<PatientsDetails>('patient');
+  final patients = box.values.toList();
+  for (PatientsDetails i in patients) {
+    if (i.email == email) {
+      print(i.name);
+      return i;
+    }
+  }
+  return null;
+}
 
 void checkCredentialsAndNavigate(
     String email, String password, BuildContext context) async {
@@ -31,7 +37,7 @@ void checkCredentialsAndNavigate(
       Navigator.of(context).pushReplacement(
         // the new route
         MaterialPageRoute(
-          builder: (BuildContext context) => const HomePage(),
+          builder: (BuildContext context) => const BottomNavigatorBar(),
         ),
       );
 
@@ -90,4 +96,9 @@ void editAllfieldInRemainderInHive(
   } catch (e) {
     print('Error updating reminder: $e');
   }
+}
+
+Future<void> updateEditedProfile(PatientsDetails selfUpdate, int key) async {
+  var box = await Hive.openBox<PatientsDetails>('patient');
+  await box.put(key, selfUpdate);
 }

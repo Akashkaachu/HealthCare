@@ -9,6 +9,18 @@ class PatientsDetails {
   final String email;
   @HiveField(2)
   final String password;
-  PatientsDetails(
-      {required this.name, required this.email, required this.password});
+  @HiveField(3)
+  final String? address;
+  @HiveField(4)
+  final String? about;
+  @HiveField(5)
+  final String? imagesrc;
+  PatientsDetails({
+    required this.name,
+    required this.email,
+    required this.password,
+    this.address,
+    this.about,
+    this.imagesrc,
+  });
 }

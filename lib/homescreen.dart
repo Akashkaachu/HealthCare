@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthcare/editprofile.dart';
+import 'package:healthcare/helper/sharedpreference.dart';
+import 'package:healthcare/hive/hive.dart';
+import 'package:healthcare/model/patientmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/remindernew.dart';
 import 'package:healthcare/sixcontainer/dairy.dart';
@@ -12,7 +18,9 @@ import 'package:healthcare/sixcontainer/measure.dart';
 import 'package:healthcare/sixcontainer/patient.dart';
 
 class BottomNavigatorBar extends StatefulWidget {
-  const BottomNavigatorBar({super.key});
+  const BottomNavigatorBar({
+    super.key,
+  });
 
   @override
   State<BottomNavigatorBar> createState() => _BottomNavigatorBarState();
@@ -31,8 +39,9 @@ class _BottomNavigatorBarState extends State<BottomNavigatorBar> {
     return Scaffold(
       body: pages[currentindex],
       bottomNavigationBar: CurvedNavigationBar(
+          index: currentindex,
           backgroundColor: Colors.transparent,
-          color: Color.fromARGB(255, 221, 237, 250),
+          color: const Color.fromARGB(255, 221, 237, 250),
           animationDuration: const Duration(milliseconds: 300),
           onTap: (index) {
             setState(() {
@@ -66,6 +75,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
+
+  PatientsDetails userdetails =
+      PatientsDetails(name: '', email: '', password: '');
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
@@ -97,9 +114,10 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const ProfilePge(),
                     ));
                   },
-                  child: const CircleAvatar(
-                    backgroundImage:
-                        AssetImage("assets/images/courserpic1.jpg"),
+                  child: CircleAvatar(
+                    backgroundImage: userdetails.imagesrc != null
+                        ? FileImage(File(userdetails.imagesrc!))
+                        : null,
                   ),
                 ),
               )
@@ -148,16 +166,6 @@ class _HomePageState extends State<HomePage> {
                                   ));
                                 }),
                             const SizedBox(height: 14),
-                            // ContainerWidget(
-                            //   image: "assets/images/icons8-diary-100.png",
-                            //   text: "Diary",
-                            //   size: size,
-                            //   onTap: () {
-                            //     Navigator.of(context).push(MaterialPageRoute(
-                            //       builder: (context) => const DiaryPge(),
-                            //     ));
-                            //   },
-                            // ),
                             const SizedBox(height: 14),
                             ContainerWidget(
                               image: "assets/images/icons8-remainder-64.png",
@@ -192,17 +200,6 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                             const SizedBox(height: 14),
-                            // ContainerWidget(
-                            //   image:
-                            //       "assets/images/icons8-add-to-favorites-64.png",
-                            //   text: "Favorite",
-                            //   size: size,
-                            //   onTap: () {
-                            //     Navigator.of(context).push(MaterialPageRoute(
-                            //       builder: (context) => const FavoratePge(),
-                            //     ));
-                            //   },
-                            // ),
                             const SizedBox(height: 15),
                             ContainerWidget(
                               image:
@@ -215,17 +212,6 @@ class _HomePageState extends State<HomePage> {
                                 ));
                               },
                             ),
-                            const SizedBox(height: 14),
-                            // ContainerWidget(
-                            //   image: "assets/images/icons8-test-tube-32.png",
-                            //   text: "Test",
-                            //   size: size,
-                            //   onTap: () {
-                            //     Navigator.of(context).push(MaterialPageRoute(
-                            //       builder: (context) => const MeasurePge(),
-                            //     ));
-                            //   },
-                            // ),
                             const SizedBox(height: 25),
                           ],
                         ),
@@ -237,6 +223,20 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ));
+  }
+
+  void getUserDetails() async {
+    await SharedPreferenceClass.getEmailLoggedIN().then((value) {
+      setState(() {
+        email = value;
+      });
+    });
+    PatientsDetails? OnePatientDetails = await getPatientsDetails(email!);
+    print(OnePatientDetails!.imagesrc);
+    setState(() {
+      userdetails = OnePatientDetails;
+      print(userdetails.imagesrc);
+    });
   }
 }
 

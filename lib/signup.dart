@@ -140,7 +140,7 @@ class _SignUpPgeState extends State<SignUpPge> {
                             addPatientDetails(rogi);
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => BottomNavigatorBar(),
                               ),
                             );
                           } else {

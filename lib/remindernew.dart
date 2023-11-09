@@ -50,7 +50,6 @@ class _ReminderPageState extends State<ReminderPage> {
           itemBuilder: (context, index) {
             final reminder = remiderlist[index];
             return InkWell(
-              onLongPress: () {},
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
@@ -122,4 +121,6 @@ int getKeyOfReminder(MedicalRemainder reminder) {
   var key = box.keyAt(box.values.toList().indexOf(reminder));
   return key;
 }
+
 //Reminderpage
+

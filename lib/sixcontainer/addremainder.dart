@@ -330,6 +330,8 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                                   context, 'Not created', Colors.red);
                             }
                             clearAllFeild();
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           }
                         }
                       }
