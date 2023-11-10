@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/editprofile.dart';
@@ -7,7 +6,6 @@ import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/login.dart';
 import 'package:healthcare/model/patientmodel.dart';
-import 'package:hive_flutter/adapters.dart';
 
 class ProfilePge extends StatefulWidget {
   const ProfilePge({super.key});

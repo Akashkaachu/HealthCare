@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthcare/alaram/localpushnotification.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/medicalmodel.dart';
@@ -34,7 +35,7 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
   @override
   void initState() {
     getEmailFromSharedpreference();
-
+    NotificationWidget.init();
     super.initState();
   }
 
@@ -325,6 +326,10 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                                   context,
                                   'Medicine Reminder Successfully created',
                                   Colors.green);
+                              NotificationWidget.showNotification(
+                                  title: 'Notification',
+                                  body:
+                                      'This is Medical Reminder Notifications');
                             } else {
                               showSnackBarImage(
                                   context, 'Not created', Colors.red);
