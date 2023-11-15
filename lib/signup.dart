@@ -70,7 +70,9 @@ class _SignUpPgeState extends State<SignUpPge> {
                   ),
                   TextFormfld(
                       validator: (val) {
-                        return RegExp(r"^[a-z0-9]+@gmail+\.com+").hasMatch(val!)
+                        return RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(val!)
                             ? null
                             : "Please enter a valid email";
                       },
@@ -147,8 +149,8 @@ class _SignUpPgeState extends State<SignUpPge> {
                             showSnackBar(context, Colors.red,
                                 "Please Check both Password and Confirm Password");
                           }
-                          clearAllSignUpFld();
                         }
+                        clearAllSignUpFld();
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color?>(

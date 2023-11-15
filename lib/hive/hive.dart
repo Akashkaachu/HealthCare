@@ -102,3 +102,19 @@ Future<void> updateEditedProfile(PatientsDetails selfUpdate, int key) async {
   var box = await Hive.openBox<PatientsDetails>('patient');
   await box.put(key, selfUpdate);
 }
+
+//for storing diary datas
+class DiaryDataBase {
+  List diaryList = [];
+  final _myBox = Hive.box("mybox");
+
+//load the data from database
+  void loadData() {
+    diaryList = _myBox.get("DIARY");
+  }
+
+//update the database
+  void updateDataBase() {
+    _myBox.put("DIARY", diaryList);
+  }
+}

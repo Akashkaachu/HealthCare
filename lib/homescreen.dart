@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:healthcare/editprofile.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/patientmodel.dart';
@@ -50,7 +48,7 @@ class _BottomNavigatorBarState extends State<BottomNavigatorBar> {
           },
           items: const [
             Icon(
-              Icons.bar_chart_outlined,
+              Icons.scale,
               color: Color(0xff7a73e7),
             ),
             Icon(
@@ -202,13 +200,12 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 14),
                             const SizedBox(height: 15),
                             ContainerWidget(
-                              image:
-                                  "assets/images/icons8-resize-vertical-64.png",
-                              text: "MEASUREMENTS ",
+                              image: "assets/images/icons8-moleskine-64.png",
+                              text: "DIARY",
                               size: size,
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const MeasurePge(),
+                                  builder: (context) => const DiaryPge(),
                                 ));
                               },
                             ),

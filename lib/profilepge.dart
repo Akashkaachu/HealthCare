@@ -58,7 +58,7 @@ class _ProfilePgeState extends State<ProfilePge> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Color(0xff7a73e7),
+                    backgroundColor: const Color(0xff7a73e7),
                     radius: 60,
                     backgroundImage: selectedImage != null
                         ? FileImage(selectedImage!)

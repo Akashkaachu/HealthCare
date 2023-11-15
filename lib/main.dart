@@ -10,9 +10,10 @@ Future<void> main() async {
   if (!Hive.isAdapterRegistered(PatientsDetailsAdapter().typeId)) {
     Hive.registerAdapter(PatientsDetailsAdapter());
   }
-  Hive.registerAdapter(
-      MedicalRemainderAdapter()); // Replace with the actual generated adapter name
+  Hive.registerAdapter(MedicalRemainderAdapter());
   await Hive.openBox<MedicalRemainder>('medicalReminders');
+//hive    for  diary
+  var box = await Hive.openBox('mybox');
   runApp(const MyApp());
 }
 

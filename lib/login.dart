@@ -55,7 +55,8 @@ class _SignPgeState extends State<SignPge> {
                         child: TextFormField(
                           cursorColor: Colors.black,
                           validator: (val) {
-                            return RegExp(r"^[a-z0-9]+@gmail+\.com+")
+                            return RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                     .hasMatch(val!)
                                 ? null
                                 : "Please enter a valid email";
