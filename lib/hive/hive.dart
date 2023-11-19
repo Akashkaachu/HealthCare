@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:healthcare/editprofile.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/homescreen.dart';
+import 'package:healthcare/model/bpmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
 import 'package:healthcare/signup.dart';
@@ -117,4 +121,36 @@ class DiaryDataBase {
   void updateDataBase() {
     _myBox.put("DIARY", diaryList);
   }
+} //Making Hivebox for bloodpressureDetails
+
+Future<void> addBloodPressureDetails(
+    BloodPressureModel blood, BuildContext context) async {
+  await Hive.initFlutter();
+  final box = await Hive.openBox<BloodPressureModel>("bloodBox");
+  final index = await box.add(blood);
+  if (index >= 0) {
+    showSnackBarImage(context, "The blood pressure data stored", Colors.green);
+  } else {
+    showSnackBarImage(
+        context, "The blood pressure data is not Saving", Colors.red);
+  }
+}
+
+Future<List<BloodPressureModel>> getBloodPressureDetails(String email) async {
+  List<BloodPressureModel> userCreatedList = [];
+  final box = await Hive.openBox<BloodPressureModel>('bloodBox');
+  final valueBloodBox = box.values.toList();
+  for (BloodPressureModel i in valueBloodBox) {
+    if (i.email == email) {
+      userCreatedList.add(i);
+    }
+  }
+  return userCreatedList;
+}
+
+void showSnackBarImage(BuildContext c, String content, Color color) {
+  ScaffoldMessenger.of(c).showSnackBar(SnackBar(
+    content: Text(content),
+    backgroundColor: color,
+  ));
 }

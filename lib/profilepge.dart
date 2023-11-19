@@ -7,6 +7,8 @@ import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/login.dart';
 import 'package:healthcare/model/patientmodel.dart';
 
+String? email = '';
+
 class ProfilePge extends StatefulWidget {
   const ProfilePge({super.key});
 
@@ -14,7 +16,6 @@ class ProfilePge extends StatefulWidget {
   State<ProfilePge> createState() => _ProfilePgeState();
 }
 
-String? email = '';
 PatientsDetails patient =
     PatientsDetails(name: '', email: '', password: '', address: '', about: '');
 

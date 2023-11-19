@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthcare/model/bpmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
 import 'package:healthcare/splash.dart';
@@ -12,6 +13,8 @@ Future<void> main() async {
   }
   Hive.registerAdapter(MedicalRemainderAdapter());
   await Hive.openBox<MedicalRemainder>('medicalReminders');
+  Hive.registerAdapter(BloodPressureModelAdapter());
+  await Hive.openBox('name');
 //hive    for  diary
   var box = await Hive.openBox('mybox');
   runApp(const MyApp());

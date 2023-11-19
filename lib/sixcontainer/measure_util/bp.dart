@@ -1,19 +1,20 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:healthcare/hive/hive.dart';
+import 'package:healthcare/model/bpmodel.dart';
+import 'package:healthcare/profilepge.dart';
+import 'package:intl/intl.dart';
 
-class BloodPressurePage extends StatelessWidget {
+class BloodPressurePage extends StatefulWidget {
   BloodPressurePage({Key? key}) : super(key: key);
 
   @override
-  List<double> weeklySummery = [
-    4.40,
-    2.50,
-    42.42,
-    10.50,
-    100.20,
-    88.99,
-    90.10,
-  ];
+  State<BloodPressurePage> createState() => _BloodPressurePageState();
+}
+
+class _BloodPressurePageState extends State<BloodPressurePage> {
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
@@ -39,7 +40,43 @@ class BloodPressurePage extends StatelessWidget {
             Center(
               child: SizedBox(
                 height: 400,
-                child: BarChartSample2(),
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: graphFutureFun(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text("error");
+                      } else {
+                        final value = snapshot.data!;
+                        return BarChartSample2(
+                          passingGraphVal: value,
+                        );
+                      }
+                    }),
+              ),
+            ),
+            SizedBox(
+              width: size.width - 50,
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                  Color(0xff7a73e7),
+                )),
+                onPressed: () {
+                  ShowBottumSheet.show(context, size);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add),
+                    const SizedBox(width: 4),
+                    Text(
+                      " Add Record",
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
             )
           ],
@@ -50,56 +87,45 @@ class BloodPressurePage extends StatelessWidget {
 }
 
 class BarChartSample2 extends StatefulWidget {
-  BarChartSample2({super.key});
-  final Color leftBarColor = Colors.red;
-  final Color rightBarColor = Colors.yellow;
-  final Color avgColor = Colors.amber;
+  final List<Map<String, dynamic>> passingGraphVal;
+  BarChartSample2({super.key, required this.passingGraphVal});
+  Color leftBarColor = Colors.red;
 
   @override
   State<StatefulWidget> createState() => BarChartSample2State();
 }
 
 class BarChartSample2State extends State<BarChartSample2> {
-  final double width = 5;
+  final double width = 9;
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
   int touchedGroupIndex = -1;
-
+  final titles = <String>[];
   @override
   void initState() {
     super.initState();
-    final barGroup1 = makeGroupData(0, 5, 12);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
-    final barGroup4 = makeGroupData(3, 20, 16);
-    final barGroup5 = makeGroupData(4, 17, 6);
-    final barGroup6 = makeGroupData(5, 19, 1.5);
-    final barGroup7 = makeGroupData(6, 10, 15.5);
-    final barGroup8 = makeGroupData(7, 15, 7.8);
-    final barGroup9 = makeGroupData(8, 18, 10.4);
-    final barGroup10 = makeGroupData(9, 12, 12.9);
-    final barGroup11 = makeGroupData(10, 10, 8.6);
-    final barGroup12 = makeGroupData(11, 10, 13);
+    List<BarChartGroupData> items = [];
 
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-      barGroup7,
-      barGroup8,
-      barGroup9,
-      barGroup10,
-      barGroup11,
-      barGroup12,
-    ];
-
+    for (var i = 0; i < widget.passingGraphVal.length; i++) {
+      double value = widget.passingGraphVal[i]['mm'] / 10;
+      if (value == 12) {
+        widget.leftBarColor = Colors.green;
+      } else if (value < 12) {
+        widget.leftBarColor = Colors.yellow ;
+      }
+      setState(() {
+        items.add(makeGroupData(i, value));
+      });
+    }
     rawBarGroups = items;
-
     showingBarGroups = rawBarGroups;
+
+    for (var i in widget.passingGraphVal) {
+      setState(() {
+        titles.add(i['date']);
+      });
+    }
   }
 
   @override
@@ -119,43 +145,43 @@ class BarChartSample2State extends State<BarChartSample2> {
                     getTooltipItem: (a, b, c, d) => null,
                   ),
                   touchCallback: (FlTouchEvent event, response) {
-                    if (response == null || response.spot == null) {
-                      setState(() {
-                        touchedGroupIndex = -1;
-                        showingBarGroups = List.of(rawBarGroups);
-                      });
-                      return;
-                    }
+                    // if (response == null || response.spot == null) {
+                    //   setState(() {
+                    //     touchedGroupIndex = -1;
+                    //     showingBarGroups = List.of(rawBarGroups);
+                    //   });
+                    //   return;
+                    // }
 
-                    touchedGroupIndex = response.spot!.touchedBarGroupIndex;
+                    // touchedGroupIndex = response.spot!.touchedBarGroupIndex;
 
-                    setState(() {
-                      if (!event.isInterestedForInteractions) {
-                        touchedGroupIndex = -1;
-                        showingBarGroups = List.of(rawBarGroups);
-                        return;
-                      }
-                      showingBarGroups = List.of(rawBarGroups);
-                      if (touchedGroupIndex != -1) {
-                        var sum = 0.0;
-                        for (final rod
-                            in showingBarGroups[touchedGroupIndex].barRods) {
-                          sum += rod.toY;
-                        }
-                        final avg = sum /
-                            showingBarGroups[touchedGroupIndex].barRods.length;
+                    // setState(() {
+                    //   if (!event.isInterestedForInteractions) {
+                    //     touchedGroupIndex = -1;
+                    //     showingBarGroups = List.of(rawBarGroups);
+                    //     return;
+                    //   }
+                    //   showingBarGroups = List.of(rawBarGroups);
+                    //   if (touchedGroupIndex != -1) {
+                    //     var sum = 0.0;
+                    //     for (final rod
+                    //         in showingBarGroups[touchedGroupIndex].barRods) {
+                    //       sum += rod.toY;
+                    //     }
+                    //     final avg = sum /
+                    //         showingBarGroups[touchedGroupIndex].barRods.length;
 
-                        showingBarGroups[touchedGroupIndex] =
-                            showingBarGroups[touchedGroupIndex].copyWith(
-                          barRods: showingBarGroups[touchedGroupIndex]
-                              .barRods
-                              .map((rod) {
-                            return rod.copyWith(
-                                toY: avg, color: widget.avgColor);
-                          }).toList(),
-                        );
-                      }
-                    });
+                    //     showingBarGroups[touchedGroupIndex] =
+                    //         showingBarGroups[touchedGroupIndex].copyWith(
+                    //       barRods: showingBarGroups[touchedGroupIndex]
+                    //           .barRods
+                    //           .map((rod) {
+                    //         return rod.copyWith(
+                    //             toY: avg, color: widget.avgColor);
+                    //       }).toList(),
+                    //     );
+                    //   }
+                    // });
                   },
                 ),
                 titlesData: FlTitlesData(
@@ -170,7 +196,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: bottomTitles,
-                      reservedSize: 42,
+                      reservedSize: 45,
                     ),
                   ),
                   leftTitles: AxisTitles(
@@ -207,10 +233,10 @@ class BarChartSample2State extends State<BarChartSample2> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 10) {
-      text = '100';
-    } else if (value == 19) {
-      text = '200';
+    } else if (value == 12) {
+      text = 'Nm';
+    } else if (value == 20) {
+      text = 'Hg';
     } else {
       return Container();
     }
@@ -222,21 +248,6 @@ class BarChartSample2State extends State<BarChartSample2> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    final titles = <String>[
-      'Jan',
-      'Feb  ',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-
     final Widget text = Text(
       titles[value.toInt()],
       style: const TextStyle(
@@ -248,14 +259,14 @@ class BarChartSample2State extends State<BarChartSample2> {
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 16, //margin top
+      space: 16,
       child: text,
     );
   }
 
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
+  BarChartGroupData makeGroupData(int x, double y1) {
     return BarChartGroupData(
-      barsSpace: 4,
+      barsSpace: 2,
       x: x,
       barRods: [
         BarChartRodData(
@@ -263,12 +274,344 @@ class BarChartSample2State extends State<BarChartSample2> {
           color: widget.leftBarColor,
           width: width,
         ),
-        BarChartRodData(
-          toY: y2,
-          color: widget.rightBarColor,
-          width: width,
+      ],
+    );
+  }
+}
+
+late int mm;
+late int Hg;
+
+class BloodPressureScaleItem extends StatefulWidget {
+  final String label;
+  final int initialValue;
+  final double scaleFactor;
+  final int secondInitialValue;
+
+  BloodPressureScaleItem({
+    required this.label,
+    required this.initialValue,
+    required this.scaleFactor,
+    required this.secondInitialValue,
+  });
+
+  @override
+  _BloodPressureScaleItemState createState() => _BloodPressureScaleItemState();
+}
+
+class _BloodPressureScaleItemState extends State<BloodPressureScaleItem> {
+  @override
+  void initState() {
+    super.initState();
+    mm = widget.initialValue;
+    Hg = widget.secondInitialValue;
+  }
+
+  void _incrementmmValue() {
+    setState(() {
+      mm++;
+    });
+  }
+
+  void _decrementmmValue() {
+    setState(() {
+      mm--;
+    });
+  }
+
+  void _incrementHgValue() {
+    setState(() {
+      Hg++;
+    });
+  }
+
+  void _decrementHgValue() {
+    setState(() {
+      Hg--;
+    });
+  }
+
+  @override
+  @override
+  Widget build(BuildContext context) {
+    var sizedBox = Column(
+      children: [
+        Text(
+          widget.label,
+          style: TextStyle(fontSize: 16.0 * widget.scaleFactor),
+        ),
+        Row(
+          children: [
+            GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.primaryDelta! > 0) {
+                  // Swiping to the right, decrement value
+                  _decrementmmValue();
+                } else if (details.primaryDelta! < 0) {
+                  // Swiping to the left, increment value
+                  _incrementmmValue();
+                }
+              },
+              child: Text(
+                mm.toString(),
+                style: TextStyle(
+                  fontSize: 24.0 * widget.scaleFactor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              '/',
+              style: TextStyle(
+                fontSize: 24.0 * widget.scaleFactor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                if (details.primaryDelta! > 0) {
+                  // Swiping to the right, decrement value
+                  _decrementHgValue();
+                } else if (details.primaryDelta! < 0) {
+                  // Swiping to the left, increment value
+                  _incrementHgValue();
+                }
+              },
+              child: Text(
+                Hg.toString(),
+                style: TextStyle(
+                  fontSize: 24.0 * widget.scaleFactor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
+    );
+    return sizedBox;
+  }
+}
+
+Future<List<Map<String, dynamic>>> graphFutureFun() async {
+  List<Map<String, dynamic>> getedGraphVal = [];
+  final values = await getBloodPressureDetails(email!);
+  for (var i in values) {
+    getedGraphVal.add({
+      'date': '${i.date.day}/${i.date.month}',
+      'mm': i.bloodmmcount,
+      'hg': i.bloodHgCount
+    });
+  }
+  return getedGraphVal;
+}
+
+class ShowBottumSheet extends StatefulWidget {
+  ShowBottumSheet({
+    super.key,
+    required this.size,
+  });
+  final size;
+  static show(BuildContext context, size) {
+    return showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
+        context: context,
+        builder: (BuildContext context) {
+          return ShowBottumSheet(
+            size: size,
+          );
+        });
+  }
+
+  @override
+  State<ShowBottumSheet> createState() => _ShowBottumSheetState();
+}
+
+var formate = DateFormat('dd/MM/yyyy');
+
+DateTime selectedDate = DateTime.now();
+DateTime selectedTime = DateTime.now();
+List<BloodPressureModel> previousRecord = [];
+
+class _ShowBottumSheetState extends State<ShowBottumSheet> {
+  @override
+  void initState() {
+    getBloodPressureDtls();
+    super.initState();
+  }
+
+  void getBloodPressureDtls() async {
+    final value = await getBloodPressureDetails(email!);
+    {
+      setState(() {
+        previousRecord = value;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 400,
+      child: Container(
+        width: widget.size.width,
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            SizedBox(
+              width: widget.size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Choose Date",
+                          style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(width: 50),
+                        Text(
+                          "${formate.format(selectedDate)}",
+                          style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    onPressed: () async {
+                      final DateTime? dateTime = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(1980),
+                          lastDate: DateTime(3000));
+                      if (dateTime != null) {
+                        setState(() {
+                          selectedDate = dateTime;
+                        });
+                        print(selectedDate);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: widget.size.width,
+              height: ((widget.size.height / 2) / 2) / 2 - 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Choose Time     ",
+                          style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(width: 50),
+                        Text(
+                          // ignore: unnecessary_string_interpolations
+                          "${DateFormat.jm().format(selectedTime)}",
+                          style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    onPressed: () async {
+                      final TimeOfDay? timeOfDay = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(selectedTime),
+                      );
+
+                      if (timeOfDay != null) {
+                        final DateTime selectedDateTime = DateTime(
+                          selectedDate.year,
+                          selectedDate.month,
+                          selectedDate.day,
+                          timeOfDay.hour,
+                          timeOfDay.minute,
+                        );
+
+                        setState(() {
+                          selectedTime = selectedDateTime;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    BloodPressureScaleItem(
+                        label: 'Blood Pressure in mmHg ',
+                        initialValue: 120,
+                        secondInitialValue: 80,
+                        scaleFactor: 1.2),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+            SizedBox(
+                width: widget.size.width - 30,
+                child: ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                      Color(0xff7a73e7),
+                    )),
+                    onPressed: () {
+                      // print(email);
+                      final blood = BloodPressureModel(
+                          date: selectedDate,
+                          time: selectedTime,
+                          bloodHgCount: Hg,
+                          bloodmmcount: mm,
+                          email: email!);
+                      for (var i in previousRecord) {
+                        if (DateFormat.jm().format(i.time) ==
+                                DateFormat.jm().format(blood.time) &&
+                            formate.format(i.date) ==
+                                formate.format(blood.date)) {
+                          showSnackBarImage(
+                              context, "Already Exit", Colors.red);
+                          Navigator.pop(context);
+                          return;
+                        }
+                      }
+                      addBloodPressureDetails(blood, context);
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      "Save",
+                    )))
+          ],
+        ),
+      ),
     );
   }
 }

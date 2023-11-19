@@ -341,7 +341,10 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                         }
                       }
                     },
-                    child: const Text("Create"),
+                    child: Text(
+                      "Create",
+                      style: GoogleFonts.poppins(),
+                    ),
                   ),
                 )
               ],
