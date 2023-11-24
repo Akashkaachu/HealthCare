@@ -2,27 +2,29 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
-import 'package:healthcare/model/pulsemodel.dart';
+import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:intl/intl.dart';
 
-class PulsePage extends StatefulWidget {
-  const PulsePage({super.key});
+class SugarLevelMeasurement extends StatefulWidget {
+  const SugarLevelMeasurement({super.key});
 
   @override
-  State<PulsePage> createState() => _PulsePageState();
+  State<SugarLevelMeasurement> createState() => _SugarLevelMeasurement();
 }
 
-//new5
-final GlobalKey<FutureBuilderclassState> _futureBuilderKey =
-    GlobalKey<FutureBuilderclassState>();
+final GlobalKey<FutureBuilderclass3State> _futureBuilderKeyHeight =
+    GlobalKey<FutureBuilderclass3State>();
 
-class _PulsePageState extends State<PulsePage> {
+class _SugarLevelMeasurement extends State<SugarLevelMeasurement> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        title: const Text("SUGAR LEVEL"),
+        centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -30,33 +32,24 @@ class _PulsePageState extends State<PulsePage> {
               Navigator.of(context).pop();
             },
             icon: const Icon(Icons.arrow_back_ios)),
-        title: Text(
-          "PULSE",
-          style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w500),
-        ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
-            SizedBox(
-              width: size.width,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    'assets/images/DocPulChk.png',
-                    fit: BoxFit.fill,
-                  )),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: Image.asset(
+                "assets/images/sugarlevelimage.png",
+                height: size.height / 2 - 40,
+                width: size.width,
+              ),
             ),
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
                   height: 400,
-                  child: FutureBuilderclass(
-                    //new2
-                    //new6
-                    key: _futureBuilderKey,
+                  child: FutureBuilderclass3(
+                    key: _futureBuilderKeyHeight,
                   )),
             ),
             SizedBox(
@@ -67,8 +60,7 @@ class _PulsePageState extends State<PulsePage> {
                   Color(0xff7a73e7),
                 )),
                 onPressed: () {
-                  // ShowBottumSheet.show(context, size);
-                  ShowBottumSheetTwo.show(context, size);
+                  ShowBottumHeightSheet.show(context, size);
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -88,31 +80,30 @@ class _PulsePageState extends State<PulsePage> {
       ),
     );
   }
-}
+} //new1
 
-//new1
-class FutureBuilderclass extends StatefulWidget {
-  const FutureBuilderclass({Key? key}) : super(key: key);
+class FutureBuilderclass3 extends StatefulWidget {
+  const FutureBuilderclass3({Key? key}) : super(key: key);
 
   @override
-  FutureBuilderclassState createState() => FutureBuilderclassState();
+  FutureBuilderclass3State createState() => FutureBuilderclass3State();
 }
 
-class FutureBuilderclassState extends State<FutureBuilderclass> {
+class FutureBuilderclass3State extends State<FutureBuilderclass3> {
   late Future<List<Map<String, dynamic>>> future;
 
   @override
   void initState() {
     super.initState();
 //new4
-    future = graphPulseFunc();
+    future = graphHeight();
   }
 
 //new3
   // Method to trigger a rebuild of the FutureBuilder
   void refresh() {
     setState(() {
-      future = graphPulseFunc();
+      future = graphHeight();
     });
   }
 
@@ -127,55 +118,53 @@ class FutureBuilderclassState extends State<FutureBuilderclass> {
           return const Text("error");
         } else {
           final value = snapshot.data!;
-          return BarChartSample3(passingPulseVal: value);
+          return BarChartSample4(passingHeightVal: value);
         }
       },
     );
   }
 }
 
-class BarChartSample3 extends StatefulWidget {
-  final List<Map<String, dynamic>> passingPulseVal;
-  BarChartSample3({super.key, required this.passingPulseVal});
-  Color leftBarColor = Colors.red;
+class BarChartSample4 extends StatefulWidget {
+  BarChartSample4({super.key, required this.passingHeightVal});
+  final List<Map<String, dynamic>> passingHeightVal;
+  Color leftBarColor = Colors.yellow;
   final Color rightBarColor = Colors.green;
   final Color avgColor = Colors.blue;
 
-  State<StatefulWidget> createState() => BarChartSample3State();
+  @override
+  State<StatefulWidget> createState() => BarChartSample4State();
 }
 
-class BarChartSample3State extends State<BarChartSample3> {
+class BarChartSample4State extends State<BarChartSample4> {
   final double width = 7;
 
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
   int touchedGroupIndex = -1;
-  final Pulsetitles = <String>[];
+  final HeighttTitles = <String>[];
 
   @override
   void initState() {
     super.initState();
-    List<BarChartGroupData> pulseItems = [];
-    for (var i = 0; i < widget.passingPulseVal.length; i++) {
-      double value = (widget.passingPulseVal[i]['count']).toDouble() / 10;
-      print(value);
+    List<BarChartGroupData> heightItems = [];
+    for (var i = 0; i < widget.passingHeightVal.length; i++) {
+      double value = (widget.passingHeightVal[i]['items']).toDouble() / 15;
       if (value > 8) {
-        widget.leftBarColor = Colors.red;
-      } else if (value == 7.2) {
         widget.leftBarColor = Colors.green;
       } else if (value < 8) {
-        widget.leftBarColor = Colors.yellow;
+        widget.leftBarColor = Colors.red;
       }
       setState(() {
-        pulseItems.add(makeGroupData(i, value));
+        heightItems.add(makeGroupData(i, value));
       });
     }
-    rawBarGroups = pulseItems;
+    rawBarGroups = heightItems;
     showingBarGroups = rawBarGroups;
-    for (var i in widget.passingPulseVal) {
+    for (var i in widget.passingHeightVal) {
       setState(() {
-        Pulsetitles.add(i['date']);
+        HeighttTitles.add(i['date']);
       });
     }
   }
@@ -189,6 +178,9 @@ class BarChartSample3State extends State<BarChartSample3> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            const SizedBox(
+              height: 38,
+            ),
             Expanded(
               child: BarChart(
                 BarChartData(
@@ -250,10 +242,10 @@ class BarChartSample3State extends State<BarChartSample3> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 7) {
-      text = 'Nm';
-    } else if (value == 14) {
-      text = 'Hg';
+    } else if (value == 8) {
+      text = '70 mm/Dl';
+    } else if (value == 15) {
+      text = '100 mm/Dl ';
     } else {
       return Container();
     }
@@ -266,7 +258,7 @@ class BarChartSample3State extends State<BarChartSample3> {
 
   Widget bottomTitles(double value, TitleMeta meta) {
     final Widget text = Text(
-      Pulsetitles[value.toInt()],
+      HeighttTitles[value.toInt()],
       style: const TextStyle(
         color: Color(0xff7589a2),
         fontWeight: FontWeight.bold,
@@ -343,18 +335,18 @@ class BarChartSample3State extends State<BarChartSample3> {
   }
 }
 
-Future<List<Map<String, dynamic>>> graphPulseFunc() async {
-  List<Map<String, dynamic>> getedPulseGraphVal = [];
-  final values = await getPulseDetails(email!);
+Future<List<Map<String, dynamic>>> graphHeight() async {
+  List<Map<String, dynamic>> getedHeightVal = [];
+  final values = await getHeightDeatails(email!);
   for (var i in values) {
-    getedPulseGraphVal
-        .add({'date': '${i.date.day}/${i.date.month}', 'count': i.rateOfpulse});
+    getedHeightVal.add(
+        {'date': '${i.date.day}/${i.date.month}', 'items': i.textController});
   }
-  return getedPulseGraphVal;
+  return getedHeightVal;
 }
 
-class ShowBottumSheetTwo extends StatefulWidget {
-  ShowBottumSheetTwo({
+class ShowBottumHeightSheet extends StatefulWidget {
+  ShowBottumHeightSheet({
     super.key,
     required this.size,
   });
@@ -368,36 +360,38 @@ class ShowBottumSheetTwo extends StatefulWidget {
         )),
         context: context,
         builder: (BuildContext context) {
-          return ShowBottumSheetTwo(
+          return ShowBottumHeightSheet(
             size: size,
           );
         });
   }
 
   @override
-  State<ShowBottumSheetTwo> createState() => _ShowBottumSheetTwoState();
+  State<ShowBottumHeightSheet> createState() => _ShowBottumHeightSheetState();
 }
 
 var formate = DateFormat('dd MMM yyyy');
+
 DateTime selectedDate = DateTime.now();
 DateTime selectedTime = DateTime.now();
-List<PulseClassModel> storeFtrGetPulse = [];
+List<HeightModelClass> storeFtrGetHeight = [];
 
-final TextEditingController pulseEditingController = TextEditingController();
-final formkey = GlobalKey<FormState>();
+final TextEditingController heightEditingController = TextEditingController();
 
-class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
+class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
   @override
   void initState() {
-    displayStoredPulseDtls();
+    getHeightDtls();
     super.initState();
   }
 
-  void displayStoredPulseDtls() async {
-    final value = await getPulseDetails(email!);
-    setState(() {
-      storeFtrGetPulse = value;
-    });
+  void getHeightDtls() async {
+    final value = await getHeightDeatails(email!);
+    {
+      setState(() {
+        storeFtrGetHeight = value;
+      });
+    }
   }
 
   @override
@@ -508,36 +502,35 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                 ],
               ),
             ),
-            // const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 45, right: 45),
               child: SizedBox(
                 height: 44,
-                child: Form(
-                  key: formkey,
-                  child: TextFormField(
-                    controller: pulseEditingController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Enter Pulse rate";
-                      } else if (value.length >= 50 && value.length <= 150) {
-                        return "you enterd the pulse rate";
-                      } else {
-                        return null;
-                      }
-                    },
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        label: Text(
-                          "Enter Pulse Rate",
-                          style: GoogleFonts.poppins(),
-                        )),
-                  ),
+                child: TextFormField(
+                  controller: heightEditingController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      label: Text("Sugar level in   mg/Dl")),
                 ),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 20),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Row(
+            //       children: [
+            //         BloodPressureScaleItem(
+            //             label: 'h ',
+            //             initialValue: 120,
+            //             secondInitialValue: 80,
+            //             scaleFactor: 1.2),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: 40),
             SizedBox(
                 width: widget.size.width - 30,
                 child: ElevatedButton(
@@ -546,32 +539,33 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                       Color(0xff7a73e7),
                     )),
                     onPressed: () async {
-                      if (formkey.currentState!.validate()) {
-                        final pulse = PulseClassModel(
-                            date: selectedDate,
-                            time: selectedTime,
-                            rateOfpulse: int.parse(pulseEditingController.text),
-                            email: email!);
-                        for (var i in storeFtrGetPulse) {
-                          if (DateFormat.jm().format(i.time) ==
-                                  DateFormat.jm().format(pulse.time) &&
-                              formate.format(i.date) ==
-                                  formate.format(i.date)) {
-                            showSnackBarImage(
-                                context, "Already Exit", Colors.red);
-                            Navigator.pop(context);
-                            return;
-                          }
+                      final height = HeightModelClass(
+                          date: selectedDate,
+                          time: selectedTime,
+                          email: email!,
+                          textController:
+                              double.parse(heightEditingController.text));
+
+                      for (var i in storeFtrGetHeight) {
+                        if (DateFormat.jm().format(i.time) ==
+                                DateFormat.jm().format(height.time) &&
+                            formate.format(i.date) ==
+                                formate.format(height.date)) {
+                          showSnackBarImage(
+                              context, "Already Exit", Colors.red);
+                          Navigator.pop(context);
+                          return;
                         }
-                        await addPulseModelDetails(pulse, context);
-                        //new7
-                        final futureBuilderState =
-                            _futureBuilderKey.currentState;
-                        if (futureBuilderState != null) {
-                          futureBuilderState.refresh();
-                        }
-                        Navigator.pop(context);
                       }
+                      await addHeightDetails(height, context);
+                      //new7
+                      _futureBuilderKeyHeight.currentState!.refresh();
+                      final futureBuilderState =
+                          _futureBuilderKeyHeight.currentState;
+                      if (futureBuilderState != null) {
+                        futureBuilderState.refresh();
+                      }
+                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Save",

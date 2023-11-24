@@ -1,13 +1,15 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:healthcare/editprofile.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/model/bpmodel.dart';
+import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
+import 'package:healthcare/model/pulsemodel.dart';
+import 'package:healthcare/model/weightmodel.dart';
+import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/signup.dart';
+import 'package:healthcare/sixcontainer/measure_util/measure.dart';
 import 'package:hive_flutter/adapters.dart';
 
 Future<void> addPatientDetails(PatientsDetails rogi) async {
@@ -129,6 +131,7 @@ Future<void> addBloodPressureDetails(
   final box = await Hive.openBox<BloodPressureModel>("bloodBox");
   final index = await box.add(blood);
   if (index >= 0) {
+    strdGetFtrBP(email!);
     showSnackBarImage(context, "The blood pressure data stored", Colors.green);
   } else {
     showSnackBarImage(
@@ -146,6 +149,82 @@ Future<List<BloodPressureModel>> getBloodPressureDetails(String email) async {
     }
   }
   return userCreatedList;
+}
+
+Future<void> addPulseModelDetails(
+    PulseClassModel pulse, BuildContext context) async {
+  await Hive.initFlutter();
+  final box = await Hive.openBox<PulseClassModel>('pulseBox');
+  final index = await box.add(pulse);
+  if (index >= 0) {
+    strdGetPulse(email!);
+    showSnackBar(context, Colors.green, "Pulse rate successfully added");
+  } else {
+    showSnackBar(context, Colors.redAccent, "Pulse rate not added");
+  }
+}
+
+Future<List<PulseClassModel>> getPulseDetails(String email) async {
+  List<PulseClassModel> gettedPulseDtls = [];
+  final box = await Hive.openBox<PulseClassModel>('pulseBox');
+  final valuePulseDtls = box.values.toList();
+  for (var i in valuePulseDtls)
+    if (i.email == email) {
+      gettedPulseDtls.add(i);
+    }
+  return gettedPulseDtls;
+}
+
+Future<void> addHeightDetails(
+    HeightModelClass height, BuildContext context) async {
+  await Hive.initFlutter();
+  final box = await Hive.openBox<HeightModelClass>("heightBOx");
+  final index = await box.add(height);
+  if (index >= 0) {
+    strdGetHeight(email!);
+    showSnackBarImage(
+        context, "The Height is successfully added", Colors.green);
+  } else {
+    showSnackBarImage(context, "The Height is already exist", Colors.red);
+  }
+}
+
+Future<List<HeightModelClass>> getHeightDeatails(String email) async {
+  List<HeightModelClass> gettedHeightDtls = [];
+  final box = await Hive.openBox<HeightModelClass>("heightBox");
+  final HeightDatas = await box.values.toList();
+  for (var i in HeightDatas) {
+    if (i.email == email) {
+      gettedHeightDtls.add(i);
+    }
+  }
+  return gettedHeightDtls;
+}
+
+Future<void> addWeightDetails(
+    WeightClassModel weight, BuildContext context) async {
+  await Hive.initFlutter();
+  final box = await Hive.openBox<WeightClassModel>("WeightBox");
+  final index = await box.add(weight);
+  if (index >= 0) {
+    strdGetWeight(email!);
+    showSnackBarImage(
+        context, "The weight is successfully added", Colors.green);
+  } else {
+    showSnackBarImage(context, "Weight is already exist", Colors.red);
+  }
+}
+
+Future<List<WeightClassModel>> getWeightStrDetails(String email) async {
+  List<WeightClassModel> StoredWeightDtls = [];
+  final box = await Hive.openBox<WeightClassModel>('WeightBox');
+  final WeightDatas = await box.values.toList();
+  for (var i in WeightDatas) {
+    if (i.email == email) {
+      StoredWeightDtls.add(i);
+    }
+  }
+  return StoredWeightDtls;
 }
 
 void showSnackBarImage(BuildContext c, String content, Color color) {

@@ -326,10 +326,15 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                                   context,
                                   'Medicine Reminder Successfully created',
                                   Colors.green);
-                              NotificationWidget.showNotification(
-                                  title: 'Notification',
-                                  body:
-                                      'This is Medical Reminder Notifications');
+                              DateTime notificationTime =
+                                  DateTime.now().add(Duration(seconds: 5));
+                              await NotificationWidget.showNotification(
+                                id: 1,
+                                title: 'Scheduled Notification',
+                                body: 'This is a scheduled notification.',
+                                payload: 'custom payload',
+                                settime: notificationTime,
+                              );
                             } else {
                               showSnackBarImage(
                                   context, 'Not created', Colors.red);

@@ -2,117 +2,99 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
-import 'package:healthcare/model/pulsemodel.dart';
+import 'package:healthcare/model/weightmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:intl/intl.dart';
 
-class PulsePage extends StatefulWidget {
-  const PulsePage({super.key});
+class WeightPage extends StatefulWidget {
+  const WeightPage({super.key});
 
   @override
-  State<PulsePage> createState() => _PulsePageState();
+  State<WeightPage> createState() => _WeightPageState();
 }
 
-//new5
-final GlobalKey<FutureBuilderclassState> _futureBuilderKey =
-    GlobalKey<FutureBuilderclassState>();
+final GlobalKey<FutureBuilderclass4State> _futureBuilderKeyWeight =
+    GlobalKey<FutureBuilderclass4State>();
 
-class _PulsePageState extends State<PulsePage> {
+class _WeightPageState extends State<WeightPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xff7a73e7),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
-        title: Text(
-          "PULSE",
-          style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w500),
-        ),
+        title: const Text("WEIGHT"),
         centerTitle: true,
+        elevation: 0,
+        backgroundColor: const Color(0xff7a73e7),
       ),
       body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Column(
-          children: [
-            SizedBox(
-              width: size.width,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    'assets/images/DocPulChk.png',
-                    fit: BoxFit.fill,
-                  )),
-            ),
-            const SizedBox(height: 40),
-            Center(
-              child: SizedBox(
-                  height: 400,
-                  child: FutureBuilderclass(
-                    //new2
-                    //new6
-                    key: _futureBuilderKey,
-                  )),
-            ),
-            SizedBox(
-              width: size.width - 50,
-              child: ElevatedButton(
-                style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                  Color(0xff7a73e7),
-                )),
-                onPressed: () {
-                  // ShowBottumSheet.show(context, size);
-                  ShowBottumSheetTwo.show(context, size);
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.add),
-                    const SizedBox(width: 4),
-                    Text(
-                      " Add Record",
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+        child: Column(children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.asset(
+                "assets/images/weightmeasuring.png",
+                height: size.height / 2 - 40,
+              )),
+          const SizedBox(height: 40),
+          Center(
+            child: SizedBox(
+              height: 400,
+              child: FutureBuilderclass4(
+                key: _futureBuilderKeyWeight,
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          SizedBox(
+            width: size.width - 50,
+            child: ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                Color(0xff7a73e7),
+              )),
+              onPressed: () {
+                ShowBottumWeightSheet.show(context, size);
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add),
+                  const SizedBox(width: 4),
+                  Text(
+                    " Add Record",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ]),
       ),
     );
   }
-}
+} //new1
 
-//new1
-class FutureBuilderclass extends StatefulWidget {
-  const FutureBuilderclass({Key? key}) : super(key: key);
+class FutureBuilderclass4 extends StatefulWidget {
+  const FutureBuilderclass4({Key? key}) : super(key: key);
 
   @override
-  FutureBuilderclassState createState() => FutureBuilderclassState();
+  FutureBuilderclass4State createState() => FutureBuilderclass4State();
 }
 
-class FutureBuilderclassState extends State<FutureBuilderclass> {
+class FutureBuilderclass4State extends State<FutureBuilderclass4> {
   late Future<List<Map<String, dynamic>>> future;
 
   @override
   void initState() {
     super.initState();
 //new4
-    future = graphPulseFunc();
+    future = graphWeight();
   }
 
 //new3
   // Method to trigger a rebuild of the FutureBuilder
   void refresh() {
     setState(() {
-      future = graphPulseFunc();
+      future = graphWeight();
     });
   }
 
@@ -127,55 +109,56 @@ class FutureBuilderclassState extends State<FutureBuilderclass> {
           return const Text("error");
         } else {
           final value = snapshot.data!;
-          return BarChartSample3(passingPulseVal: value);
+          return BarChartSample5(passingWeightVal: value);
         }
       },
     );
   }
 }
 
-class BarChartSample3 extends StatefulWidget {
-  final List<Map<String, dynamic>> passingPulseVal;
-  BarChartSample3({super.key, required this.passingPulseVal});
-  Color leftBarColor = Colors.red;
+class BarChartSample5 extends StatefulWidget {
+  BarChartSample5({
+    super.key,
+    required this.passingWeightVal,
+  });
+  final List<Map<String, dynamic>> passingWeightVal;
+  Color leftBarColor = Colors.yellow;
   final Color rightBarColor = Colors.green;
   final Color avgColor = Colors.blue;
 
-  State<StatefulWidget> createState() => BarChartSample3State();
+  @override
+  State<StatefulWidget> createState() => BarChartSample5State();
 }
 
-class BarChartSample3State extends State<BarChartSample3> {
+class BarChartSample5State extends State<BarChartSample5> {
   final double width = 7;
 
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
   int touchedGroupIndex = -1;
-  final Pulsetitles = <String>[];
+  final WeighttTitles = <String>[];
 
   @override
   void initState() {
     super.initState();
-    List<BarChartGroupData> pulseItems = [];
-    for (var i = 0; i < widget.passingPulseVal.length; i++) {
-      double value = (widget.passingPulseVal[i]['count']).toDouble() / 10;
-      print(value);
+    List<BarChartGroupData> weightItems = [];
+    for (var i = 0; i < widget.passingWeightVal.length; i++) {
+      double value = (widget.passingWeightVal[i]['calorie']).toDouble() / 10;
       if (value > 8) {
-        widget.leftBarColor = Colors.red;
-      } else if (value == 7.2) {
         widget.leftBarColor = Colors.green;
       } else if (value < 8) {
-        widget.leftBarColor = Colors.yellow;
+        widget.leftBarColor = Colors.red;
       }
       setState(() {
-        pulseItems.add(makeGroupData(i, value));
+        weightItems.add(makeGroupData(i, value));
       });
     }
-    rawBarGroups = pulseItems;
+    rawBarGroups = weightItems;
     showingBarGroups = rawBarGroups;
-    for (var i in widget.passingPulseVal) {
+    for (var i in widget.passingWeightVal) {
       setState(() {
-        Pulsetitles.add(i['date']);
+        WeighttTitles.add(i['date']);
       });
     }
   }
@@ -189,6 +172,9 @@ class BarChartSample3State extends State<BarChartSample3> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            const SizedBox(
+              height: 38,
+            ),
             Expanded(
               child: BarChart(
                 BarChartData(
@@ -198,7 +184,49 @@ class BarChartSample3State extends State<BarChartSample3> {
                       tooltipBgColor: Colors.grey,
                       getTooltipItem: (a, b, c, d) => null,
                     ),
-                    touchCallback: (FlTouchEvent event, response) {},
+                    touchCallback: (FlTouchEvent event, response) {
+                      //     if (response == null || response.spot == null) {
+                      //       setState(() {
+                      //         touchedGroupIndex = -1;
+                      //         showingBarGroups = List.of(rawBarGroups);
+                      //       });
+                      //       return;
+                      //     }
+
+                      //     touchedGroupIndex = response.spot!.touchedBarGroupIndex;
+
+                      //     setState(() {
+                      //       if (!event.isInterestedForInteractions) {
+                      //         touchedGroupIndex = -1;
+                      //         showingBarGroups = List.of(rawBarGroups);
+                      //         return;
+                      //       }
+                      //       showingBarGroups = List.of(rawBarGroups);
+                      //       if (touchedGroupIndex != -1) {
+                      //         var sum = 0.0;
+                      //         for (final rod
+                      //             in showingBarGroups[touchedGroupIndex].barRods) {
+                      //           sum += rod.toY;
+                      //         }
+                      //         final avg = sum /
+                      //             showingBarGroups[touchedGroupIndex]
+                      //                 .barRods
+                      //                 .length;
+
+                      //         showingBarGroups[touchedGroupIndex] =
+                      //             showingBarGroups[touchedGroupIndex].copyWith(
+                      //           barRods: showingBarGroups[touchedGroupIndex]
+                      //               .barRods
+                      //               .map((rod) {
+                      //             return rod.copyWith(
+                      //                 toY: avg, color: widget.avgColor);
+                      //           }).toList(),
+                      //         );
+                      //       }
+                      //     });
+                      //   },
+                      // ),
+                    },
                   ),
                   titlesData: FlTitlesData(
                     show: true,
@@ -250,10 +278,10 @@ class BarChartSample3State extends State<BarChartSample3> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 7) {
-      text = 'Nm';
-    } else if (value == 14) {
-      text = 'Hg';
+    } else if (value == 10) {
+      text = '50 Weight';
+    } else if (value == 19) {
+      text = '110 Weight';
     } else {
       return Container();
     }
@@ -266,7 +294,7 @@ class BarChartSample3State extends State<BarChartSample3> {
 
   Widget bottomTitles(double value, TitleMeta meta) {
     final Widget text = Text(
-      Pulsetitles[value.toInt()],
+      WeighttTitles[value.toInt()],
       style: const TextStyle(
         color: Color(0xff7589a2),
         fontWeight: FontWeight.bold,
@@ -343,18 +371,18 @@ class BarChartSample3State extends State<BarChartSample3> {
   }
 }
 
-Future<List<Map<String, dynamic>>> graphPulseFunc() async {
-  List<Map<String, dynamic>> getedPulseGraphVal = [];
-  final values = await getPulseDetails(email!);
+Future<List<Map<String, dynamic>>> graphWeight() async {
+  List<Map<String, dynamic>> getedWeightVal = [];
+  final values = await getWeightStrDetails(email!);
   for (var i in values) {
-    getedPulseGraphVal
-        .add({'date': '${i.date.day}/${i.date.month}', 'count': i.rateOfpulse});
+    getedWeightVal.add(
+        {'date': '${i.date.day}/${i.date.month}', 'calorie': i.controller});
   }
-  return getedPulseGraphVal;
+  return getedWeightVal;
 }
 
-class ShowBottumSheetTwo extends StatefulWidget {
-  ShowBottumSheetTwo({
+class ShowBottumWeightSheet extends StatefulWidget {
+  ShowBottumWeightSheet({
     super.key,
     required this.size,
   });
@@ -368,36 +396,38 @@ class ShowBottumSheetTwo extends StatefulWidget {
         )),
         context: context,
         builder: (BuildContext context) {
-          return ShowBottumSheetTwo(
+          return ShowBottumWeightSheet(
             size: size,
           );
         });
   }
 
   @override
-  State<ShowBottumSheetTwo> createState() => _ShowBottumSheetTwoState();
+  State<ShowBottumWeightSheet> createState() => _ShowBottumWeightSheetState();
 }
 
 var formate = DateFormat('dd MMM yyyy');
+
 DateTime selectedDate = DateTime.now();
 DateTime selectedTime = DateTime.now();
-List<PulseClassModel> storeFtrGetPulse = [];
+List<WeightClassModel> storeFtrGetWeight = [];
 
-final TextEditingController pulseEditingController = TextEditingController();
-final formkey = GlobalKey<FormState>();
+final TextEditingController weightEditingController = TextEditingController();
 
-class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
+class _ShowBottumWeightSheetState extends State<ShowBottumWeightSheet> {
   @override
   void initState() {
-    displayStoredPulseDtls();
+    getWeightDtls();
     super.initState();
   }
 
-  void displayStoredPulseDtls() async {
-    final value = await getPulseDetails(email!);
-    setState(() {
-      storeFtrGetPulse = value;
-    });
+  void getWeightDtls() async {
+    final value = await getWeightStrDetails(email!);
+    {
+      setState(() {
+        storeFtrGetWeight = value;
+      });
+    }
   }
 
   @override
@@ -508,36 +538,35 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                 ],
               ),
             ),
-            // const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 45, right: 45),
               child: SizedBox(
                 height: 44,
-                child: Form(
-                  key: formkey,
-                  child: TextFormField(
-                    controller: pulseEditingController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Enter Pulse rate";
-                      } else if (value.length >= 50 && value.length <= 150) {
-                        return "you enterd the pulse rate";
-                      } else {
-                        return null;
-                      }
-                    },
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        label: Text(
-                          "Enter Pulse Rate",
-                          style: GoogleFonts.poppins(),
-                        )),
-                  ),
+                child: TextFormField(
+                  controller: weightEditingController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      label: Text("Enter your Weight")),
                 ),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 20),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Row(
+            //       children: [
+            //         BloodPressureScaleItem(
+            //             label: 'h ',
+            //             initialValue: 120,
+            //             secondInitialValue: 80,
+            //             scaleFactor: 1.2),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: 40),
             SizedBox(
                 width: widget.size.width - 30,
                 child: ElevatedButton(
@@ -546,32 +575,32 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                       Color(0xff7a73e7),
                     )),
                     onPressed: () async {
-                      if (formkey.currentState!.validate()) {
-                        final pulse = PulseClassModel(
-                            date: selectedDate,
-                            time: selectedTime,
-                            rateOfpulse: int.parse(pulseEditingController.text),
-                            email: email!);
-                        for (var i in storeFtrGetPulse) {
-                          if (DateFormat.jm().format(i.time) ==
-                                  DateFormat.jm().format(pulse.time) &&
-                              formate.format(i.date) ==
-                                  formate.format(i.date)) {
-                            showSnackBarImage(
-                                context, "Already Exit", Colors.red);
-                            Navigator.pop(context);
-                            return;
-                          }
+                      final weight = WeightClassModel(
+                          date: selectedDate,
+                          time: selectedTime,
+                          controller:
+                              double.parse(weightEditingController.text),
+                          email: email!);
+                      for (var i in storeFtrGetWeight) {
+                        if (DateFormat.jm().format(i.time) ==
+                                DateFormat.jm().format(weight.time) &&
+                            formate.format(i.date) ==
+                                formate.format(weight.date)) {
+                          showSnackBarImage(
+                              context, "Already Exit", Colors.red);
+                          Navigator.pop(context);
+                          return;
                         }
-                        await addPulseModelDetails(pulse, context);
-                        //new7
-                        final futureBuilderState =
-                            _futureBuilderKey.currentState;
-                        if (futureBuilderState != null) {
-                          futureBuilderState.refresh();
-                        }
-                        Navigator.pop(context);
                       }
+                      await addWeightDetails(weight, context);
+                      //new7
+                      _futureBuilderKeyWeight.currentState!.refresh();
+                      final futureBuilderState =
+                          _futureBuilderKeyWeight.currentState;
+                      if (futureBuilderState != null) {
+                        futureBuilderState.refresh();
+                      }
+                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Save",

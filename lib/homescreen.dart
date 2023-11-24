@@ -12,7 +12,7 @@ import 'package:healthcare/sixcontainer/dairy.dart';
 import 'package:healthcare/sixcontainer/diseasecom.dart';
 import 'package:healthcare/sixcontainer/favorite.dart';
 import 'package:healthcare/sixcontainer/firstaid.dart';
-import 'package:healthcare/sixcontainer/measure.dart';
+import 'package:healthcare/sixcontainer/measure_util/measure.dart';
 import 'package:healthcare/sixcontainer/patient.dart';
 
 class BottomNavigatorBar extends StatefulWidget {

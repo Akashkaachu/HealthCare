@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/sixcontainer/util/dialogbox.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -18,6 +19,7 @@ class _DiaryPgeState extends State<DiaryPge> {
   void initState() {
     if (_myBox.get("DIARY") == null) {
       db.diaryList = [];
+      // const Text("Data is Not Found");
     } else {
       db.loadData();
     }
@@ -82,20 +84,27 @@ class _DiaryPgeState extends State<DiaryPge> {
         title: const Text("DIARY"),
         centerTitle: true,
       ),
-      body: Container(
-        color: const Color(0xff7a73e7).withOpacity(0.09),
-        child: ListView.builder(
-          itemCount: db.diaryList.length,
-          itemBuilder: (context, index) {
-            return DiaryContainer(
-              size: size,
-              taskName: db.diaryList[index][0],
-              taskCompleted: db.diaryList[index][1],
-              onChanged: (value) => checkBoxValue(value, index),
-              deleteFunction: (p0) => deleteTask(index),
-            );
-          },
-        ),
+      body: Center(
+        child: db.diaryList.isEmpty
+            ? Text(
+                ' No Diary is Not Found ',
+                style: GoogleFonts.poppins(),
+              )
+            : Container(
+                color: const Color(0xff7a73e7).withOpacity(0.09),
+                child: ListView.builder(
+                  itemCount: db.diaryList.length,
+                  itemBuilder: (context, index) {
+                    return DiaryContainer(
+                      size: size,
+                      taskName: db.diaryList[index][0],
+                      taskCompleted: db.diaryList[index][1],
+                      onChanged: (value) => checkBoxValue(value, index),
+                      deleteFunction: (p0) => deleteTask(index),
+                    );
+                  },
+                ),
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

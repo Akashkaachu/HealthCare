@@ -11,7 +11,10 @@ class BloodPressurePage extends StatefulWidget {
 
   @override
   State<BloodPressurePage> createState() => _BloodPressurePageState();
-}
+} //new5
+
+final GlobalKey<FutureBuilderclass2State> _futureBuilderKey2 =
+    GlobalKey<FutureBuilderclass2State>();
 
 class _BloodPressurePageState extends State<BloodPressurePage> {
   @override
@@ -32,29 +35,21 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: Image.asset(
-                    'assets/images/bp.jpg',
+                    'assets/images/DocCheckBp.png',
                     fit: BoxFit.fill,
+                    height: size.height - 550,
+                    width: size.width - 450,
                   )),
             ),
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-                height: 400,
-                child: FutureBuilder<List<Map<String, dynamic>>>(
-                    future: graphFutureFun(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return const Text("error");
-                      } else {
-                        final value = snapshot.data!;
-                        return BarChartSample2(
-                          passingGraphVal: value,
-                        );
-                      }
-                    }),
-              ),
+                  height: 400,
+                  child: FutureBuilderclass2(
+                    //new2
+                    //new6
+                    key: _futureBuilderKey2,
+                  )),
             ),
             SizedBox(
               width: size.width - 50,
@@ -86,6 +81,50 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   }
 }
 
+//new1
+class FutureBuilderclass2 extends StatefulWidget {
+  const FutureBuilderclass2({Key? key}) : super(key: key);
+
+  @override
+  FutureBuilderclass2State createState() => FutureBuilderclass2State();
+}
+
+class FutureBuilderclass2State extends State<FutureBuilderclass2> {
+  late Future<List<Map<String, dynamic>>> future;
+
+  @override
+  void initState() {
+    super.initState();
+//new4
+    future = graphFutureFun();
+  }
+
+//new3
+  // Method to trigger a rebuild of the FutureBuilder
+  void refresh() {
+    setState(() {
+      future = graphFutureFun();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Text("error");
+        } else {
+          final value = snapshot.data!;
+          return BarChartSample2(passingGraphVal: value);
+        }
+      },
+    );
+  }
+}
+
 class BarChartSample2 extends StatefulWidget {
   final List<Map<String, dynamic>> passingGraphVal;
   BarChartSample2({super.key, required this.passingGraphVal});
@@ -108,11 +147,13 @@ class BarChartSample2State extends State<BarChartSample2> {
     List<BarChartGroupData> items = [];
 
     for (var i = 0; i < widget.passingGraphVal.length; i++) {
-      double value = widget.passingGraphVal[i]['mm'] / 10;
-      if (value == 12) {
-        widget.leftBarColor = Colors.green;
+      double value = (widget.passingGraphVal[i]['mm']).toDouble() / 15;
+      if (value > 12) {
+        widget.leftBarColor = Colors.red;
+      } else if (value == 12) {
+        widget.leftBarColor = Colors.yellow;
       } else if (value < 12) {
-        widget.leftBarColor = Colors.yellow ;
+        widget.leftBarColor = Colors.green;
       }
       setState(() {
         items.add(makeGroupData(i, value));
@@ -144,45 +185,6 @@ class BarChartSample2State extends State<BarChartSample2> {
                     tooltipBgColor: Colors.grey,
                     getTooltipItem: (a, b, c, d) => null,
                   ),
-                  touchCallback: (FlTouchEvent event, response) {
-                    // if (response == null || response.spot == null) {
-                    //   setState(() {
-                    //     touchedGroupIndex = -1;
-                    //     showingBarGroups = List.of(rawBarGroups);
-                    //   });
-                    //   return;
-                    // }
-
-                    // touchedGroupIndex = response.spot!.touchedBarGroupIndex;
-
-                    // setState(() {
-                    //   if (!event.isInterestedForInteractions) {
-                    //     touchedGroupIndex = -1;
-                    //     showingBarGroups = List.of(rawBarGroups);
-                    //     return;
-                    //   }
-                    //   showingBarGroups = List.of(rawBarGroups);
-                    //   if (touchedGroupIndex != -1) {
-                    //     var sum = 0.0;
-                    //     for (final rod
-                    //         in showingBarGroups[touchedGroupIndex].barRods) {
-                    //       sum += rod.toY;
-                    //     }
-                    //     final avg = sum /
-                    //         showingBarGroups[touchedGroupIndex].barRods.length;
-
-                    //     showingBarGroups[touchedGroupIndex] =
-                    //         showingBarGroups[touchedGroupIndex].copyWith(
-                    //       barRods: showingBarGroups[touchedGroupIndex]
-                    //           .barRods
-                    //           .map((rod) {
-                    //         return rod.copyWith(
-                    //             toY: avg, color: widget.avgColor);
-                    //       }).toList(),
-                    //     );
-                    //   }
-                    // });
-                  },
                 ),
                 titlesData: FlTitlesData(
                   show: true,
@@ -233,9 +235,9 @@ class BarChartSample2State extends State<BarChartSample2> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 12) {
+    } else if (value == 8) {
       text = 'Nm';
-    } else if (value == 20) {
+    } else if (value == 15) {
       text = 'Hg';
     } else {
       return Container();
@@ -431,7 +433,7 @@ class ShowBottumSheet extends StatefulWidget {
   State<ShowBottumSheet> createState() => _ShowBottumSheetState();
 }
 
-var formate = DateFormat('dd/MM/yyyy');
+var formate = DateFormat('dd MMM yyyy');
 
 DateTime selectedDate = DateTime.now();
 DateTime selectedTime = DateTime.now();
@@ -500,7 +502,6 @@ class _ShowBottumSheetState extends State<ShowBottumSheet> {
                         setState(() {
                           selectedDate = dateTime;
                         });
-                        print(selectedDate);
                       }
                     },
                   ),
@@ -584,27 +585,39 @@ class _ShowBottumSheetState extends State<ShowBottumSheet> {
                         backgroundColor: MaterialStatePropertyAll(
                       Color(0xff7a73e7),
                     )),
-                    onPressed: () {
+                    onPressed: () async {
                       // print(email);
-                      final blood = BloodPressureModel(
-                          date: selectedDate,
-                          time: selectedTime,
-                          bloodHgCount: Hg,
-                          bloodmmcount: mm,
-                          email: email!);
-                      for (var i in previousRecord) {
-                        if (DateFormat.jm().format(i.time) ==
-                                DateFormat.jm().format(blood.time) &&
-                            formate.format(i.date) ==
-                                formate.format(blood.date)) {
-                          showSnackBarImage(
-                              context, "Already Exit", Colors.red);
-                          Navigator.pop(context);
-                          return;
+                      if (mm >= 90 && Hg >= 60 && mm <= 180 && Hg <= 120) {
+                        final blood = BloodPressureModel(
+                            date: selectedDate,
+                            time: selectedTime,
+                            bloodHgCount: Hg,
+                            bloodmmcount: mm,
+                            email: email!);
+                        for (var i in previousRecord) {
+                          if (DateFormat.jm().format(i.time) ==
+                                  DateFormat.jm().format(blood.time) &&
+                              formate.format(i.date) ==
+                                  formate.format(blood.date)) {
+                            showSnackBarImage(
+                                context, "Already Exit", Colors.red);
+                            Navigator.pop(context);
+                            return;
+                          }
                         }
+                        await addBloodPressureDetails(blood, context);
+                        //new7
+                        final futureBuilderState =
+                            _futureBuilderKey2.currentState;
+                        if (futureBuilderState != null) {
+                          futureBuilderState.refresh();
+                        }
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.pop(context);
+                        showSnackBarImage(
+                            context, "Invalid Blood Pressure", Colors.red);
                       }
-                      addBloodPressureDetails(blood, context);
-                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Save",
