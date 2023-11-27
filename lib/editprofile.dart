@@ -35,6 +35,9 @@ class _EditProfilePgeState extends State<EditProfilePge> {
         TextEditingController(text: widget.mydetails.address);
     tellUsEditingcontrollerr =
         TextEditingController(text: widget.mydetails.about);
+    if (widget.mydetails.imagesrc != null) {
+      selectedImage = File(widget.mydetails.imagesrc!);
+    }
     super.initState();
   }
 
@@ -204,24 +207,32 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                 ),
                                 onPressed: () {
                                   if (formkey.currentState!.validate()) {
-                                    final key = getKeyOfProfileSelfUpdate(
-                                        widget.mydetails);
-                                    final value = PatientsDetails(
-                                        name: nameEditingcontrollerr.text,
-                                        email: emailEditingcontrollerr.text,
-                                        password: widget.mydetails.password,
-                                        address: addressEditingcontrollerr.text,
-                                        about: tellUsEditingcontrollerr.text,
-                                        imagesrc: selectedImage!.path);
-                                    updateEditedProfile(value, key);
-                                    SharedPreferenceClass.saveuserEmailfun(
-                                        emailEditingcontrollerr.text);
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              BottomNavigatorBar(),
-                                        ),
-                                        (route) => false);
+                                    if (selectedImage != null) {
+                                      final key = getKeyOfProfileSelfUpdate(
+                                          widget.mydetails);
+                                      final value = PatientsDetails(
+                                          name: nameEditingcontrollerr.text,
+                                          email: emailEditingcontrollerr.text,
+                                          password: widget.mydetails.password,
+                                          address:
+                                              addressEditingcontrollerr.text,
+                                          about: tellUsEditingcontrollerr.text,
+                                          imagesrc: selectedImage!.path);
+                                      updateEditedProfile(value, key);
+                                      SharedPreferenceClass.saveuserEmailfun(
+                                          emailEditingcontrollerr.text);
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BottomNavigatorBar(),
+                                          ),
+                                          (route) => false);
+                                    } else {
+                                      showSnackBarImage(
+                                          context,
+                                          "Please select Profile Image",
+                                          Colors.red);
+                                    }
                                   }
                                 },
                                 child: const Text("UPDATE")),

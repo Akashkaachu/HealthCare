@@ -29,8 +29,8 @@ class _ReminderPageState extends State<ReminderPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Reminder",
-          style: GoogleFonts.poppins(),
+          "REMINDER",
+          style: GoogleFonts.poppins(fontSize: 25, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),

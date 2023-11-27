@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/profilepge.dart';
+import 'package:healthcare/sixcontainer/addremainder.dart';
 import 'package:intl/intl.dart';
 
 class SugarLevelMeasurement extends StatefulWidget {
@@ -337,7 +338,7 @@ class BarChartSample4State extends State<BarChartSample4> {
 
 Future<List<Map<String, dynamic>>> graphHeight() async {
   List<Map<String, dynamic>> getedHeightVal = [];
-  final values = await getHeightDeatails(email!);
+  final values = await getSugarLevelDeatails(email!);
   for (var i in values) {
     getedHeightVal.add(
         {'date': '${i.date.day}/${i.date.month}', 'items': i.textController});
@@ -386,7 +387,7 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
   }
 
   void getHeightDtls() async {
-    final value = await getHeightDeatails(email!);
+    final value = await getSugarLevelDeatails(email!);
     {
       setState(() {
         storeFtrGetHeight = value;
@@ -557,7 +558,7 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                           return;
                         }
                       }
-                      await addHeightDetails(height, context);
+                      await addSugarLevelDetails(height, context);
                       //new7
                       _futureBuilderKeyHeight.currentState!.refresh();
                       final futureBuilderState =

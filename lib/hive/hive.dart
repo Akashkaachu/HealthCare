@@ -5,11 +5,15 @@ import 'package:healthcare/model/bpmodel.dart';
 import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
+import 'package:healthcare/model/pdfpatientrecorder.dart';
 import 'package:healthcare/model/pulsemodel.dart';
+import 'package:healthcare/model/storeimgpdfmodel.dart';
 import 'package:healthcare/model/weightmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/signup.dart';
+import 'package:healthcare/sixcontainer/addremainder.dart';
 import 'package:healthcare/sixcontainer/measure_util/measure.dart';
+import 'package:healthcare/sixcontainer/patient.dart';
 import 'package:hive_flutter/adapters.dart';
 
 Future<void> addPatientDetails(PatientsDetails rogi) async {
@@ -175,13 +179,13 @@ Future<List<PulseClassModel>> getPulseDetails(String email) async {
   return gettedPulseDtls;
 }
 
-Future<void> addHeightDetails(
+Future<void> addSugarLevelDetails(
     HeightModelClass height, BuildContext context) async {
   await Hive.initFlutter();
-  final box = await Hive.openBox<HeightModelClass>("heightBOx");
+  final box = await Hive.openBox<HeightModelClass>("sugarBox");
   final index = await box.add(height);
   if (index >= 0) {
-    strdGetHeight(email!);
+    strdGetSugarLevel(email!);
     showSnackBarImage(
         context, "The Height is successfully added", Colors.green);
   } else {
@@ -189,9 +193,9 @@ Future<void> addHeightDetails(
   }
 }
 
-Future<List<HeightModelClass>> getHeightDeatails(String email) async {
+Future<List<HeightModelClass>> getSugarLevelDeatails(String email) async {
   List<HeightModelClass> gettedHeightDtls = [];
-  final box = await Hive.openBox<HeightModelClass>("heightBox");
+  final box = await Hive.openBox<HeightModelClass>("sugarBox");
   final HeightDatas = await box.values.toList();
   for (var i in HeightDatas) {
     if (i.email == email) {
@@ -227,9 +231,64 @@ Future<List<WeightClassModel>> getWeightStrDetails(String email) async {
   return StoredWeightDtls;
 }
 
-void showSnackBarImage(BuildContext c, String content, Color color) {
-  ScaffoldMessenger.of(c).showSnackBar(SnackBar(
-    content: Text(content),
-    backgroundColor: color,
-  ));
+Future<void> addFolderPatientRecDetails(
+    PdfPatientClassModel pdfCreate, BuildContext context) async {
+  await Hive.initFlutter();
+  final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
+  final index = await box.add(pdfCreate);
+  if (index >= 0) {
+    showSnackBarImage(context, "Folder Seccessfully added", Colors.green);
+    clearTxt();
+  } else {
+    showSnackBarImage(context, 'Folder Already Exist', Colors.red);
+  }
 }
+
+void clearTxt() {
+  ptEdiditinRecorder.clear();
+}
+
+Future<List<PdfPatientClassModel>> getFolderPatientRecDetails(
+    String email) async {
+  List<PdfPatientClassModel> gettedFolderDtls = [];
+  final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
+  final folderDtls = box.values.toList();
+  for (var i in folderDtls) {
+    if (i.email == email) {
+      gettedFolderDtls.add(i);
+    }
+  }
+  return gettedFolderDtls;
+}
+
+Future<void> addImagePdfTypes(
+    StoreImgPdfClassModel imgpdf, BuildContext context) async {
+  Hive.initFlutter();
+  final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
+  final index = await box.add(imgpdf);
+  if (index >= 0) {
+    showSnackBarImage(context, "Successfully saved", Colors.green);
+  } else {
+    showSnackBarImage(context, 'Invalid Pdf', Colors.red);
+  }
+}
+
+Future<List<StoreImgPdfClassModel>> getImagePdfTypeDtls(
+    String email, String folderName) async {
+  List<StoreImgPdfClassModel> gettedImgPdfDtls = [];
+  final box = await Hive.openBox<StoreImgPdfClassModel>('ImagePdfBox');
+  final gettedBox = box.values.toList();
+  for (var i in gettedBox) {
+    if (i.email == email && i.folderName == folderName) {
+      gettedImgPdfDtls.add(i);
+    }
+  }
+  return gettedImgPdfDtls;
+}
+
+// void showSnackBarImage(BuildContext c, String content, Color color) {
+//   ScaffoldMessenger.of(c).showSnackBar(SnackBar(
+//     content: Text(content),
+//     backgroundColor: color,
+//   ));
+// }

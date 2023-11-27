@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/bpmodel.dart';
+import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/model/pulsemodel.dart';
+import 'package:healthcare/model/weightmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:intl/intl.dart';
 
@@ -108,9 +110,9 @@ class _MeasurementDisPageState extends State<MeasurementDisPage> {
                     } else if (snapshot.hasError) {
                       return const Text('Error');
                     } else {
-                      List<PulseClassModel> bloodPrsrList = snapshot.data!;
+                      List<PulseClassModel> pulseList = snapshot.data!;
                       if (searchEditingController.text.isNotEmpty) {
-                        bloodPrsrList = bloodPrsrList
+                        pulseList = pulseList
                             .where((element) =>
                                 element.rateOfpulse
                                     .toString()
@@ -127,7 +129,7 @@ class _MeasurementDisPageState extends State<MeasurementDisPage> {
                       return Expanded(
                         child: ListView.builder(
                           itemBuilder: (context, index) {
-                            PulseClassModel pulseModel = bloodPrsrList[index];
+                            PulseClassModel pulseModel = pulseList[index];
                             String formattedDate = DateFormat('dd MMM yyyy')
                                 .format(pulseModel.date);
                             return ListTile(
@@ -136,13 +138,100 @@ class _MeasurementDisPageState extends State<MeasurementDisPage> {
                               subtitle: Text(formattedDate),
                             );
                           },
-                          itemCount: bloodPrsrList.length,
+                          itemCount: pulseList.length,
                         ),
                       );
                     }
                   },
                 )
               : Container(),
+          widget.appText == 'WEIGHT'
+              ? FutureBuilder<List<WeightClassModel>>(
+                  future: getWeightStrDetails(email!),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Text("Error");
+                    } else {
+                      List<WeightClassModel> weightList = snapshot.data!;
+                      if (searchEditingController.text.isNotEmpty) {
+                        weightList = weightList
+                            .where((element) =>
+                                element.controller
+                                    .toInt()
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(searchEditingController.text
+                                        .toLowerCase()) ||
+                                DateFormat('dd MMM yyyy')
+                                    .format(element.date)
+                                    .toLowerCase()
+                                    .contains(searchEditingController.text
+                                        .toLowerCase()))
+                            .toList();
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            WeightClassModel weightModel = weightList[index];
+                            String formattedDate = DateFormat('dd MMM yyy')
+                                .format(weightModel.date);
+                            return ListTile(
+                              title: Text(
+                                  "${weightModel.controller.toInt().toString()} Kg."),
+                              subtitle: Text(formattedDate),
+                            );
+                          },
+                          itemCount: weightList.length,
+                        ),
+                      );
+                    }
+                  },
+                )
+              : Container(),
+          widget.appText == 'SUGAR LEVEL'
+              ? FutureBuilder(
+                  future: getSugarLevelDeatails(email!),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Text("Error");
+                    } else {
+                      List<HeightModelClass> SugarList = snapshot.data!;
+                      if (searchEditingController.text.isNotEmpty) {
+                        SugarList = SugarList.where((element) =>
+                            element.textController
+                                .toInt()
+                                .toString()
+                                .toLowerCase()
+                                .contains(searchEditingController.text
+                                    .toLowerCase()) ||
+                            DateFormat('dd MMM yyyy')
+                                .format(element.date)
+                                .toLowerCase()
+                                .contains(searchEditingController.text
+                                    .toLowerCase())).toList();
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: SugarList.length,
+                          itemBuilder: (context, index) {
+                            HeightModelClass sugarModel = SugarList[index];
+                            String fomattedDate = DateFormat('dd MMM yyyy')
+                                .format(sugarModel.date);
+                            return ListTile(
+                              title: Text("${sugarModel.textController} mg/Dl"),
+                              subtitle: Text(fomattedDate),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                )
+              : Container()
         ],
       )),
     );

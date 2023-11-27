@@ -39,7 +39,7 @@ class _MeasurePgeState extends State<MeasurePge> {
   void initState() {
     strdGetFtrBP(email!);
     strdGetPulse(email!);
-    strdGetHeight(email!);
+    strdGetSugarLevel(email!);
     super.initState();
   }
 
@@ -238,8 +238,8 @@ Future<void> strdGetPulse(String email) async {
   getStoredPulse.notifyListeners();
 }
 
-Future<void> strdGetHeight(String email) async {
-  final value = await getHeightDeatails(email);
+Future<void> strdGetSugarLevel(String email) async {
+  final value = await getSugarLevelDeatails(email);
   getStoredHeight.value = value;
   getStoredHeight.notifyListeners();
 }

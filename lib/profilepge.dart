@@ -42,7 +42,7 @@ class _ProfilePgeState extends State<ProfilePge> {
         backgroundColor: const Color(0xff7a73e7),
         elevation: 0,
         title: Text(
-          "Profile",
+          "Profile".toUpperCase(),
           style: GoogleFonts.poppins(
               color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500),
         ),

@@ -56,6 +56,8 @@ dependencies:
   omni_datetime_picker: ^1.0.9
   build_runner: ^2.4.6
   timezone: ^0.9.2
+  file_picker: ^6.1.1
+  open_file: ^3.3.2
 
 
 
