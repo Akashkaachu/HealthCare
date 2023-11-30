@@ -30,7 +30,11 @@ class _ReminderPageState extends State<ReminderPage> {
       appBar: AppBar(
         title: Text(
           "REMINDER",
-          style: GoogleFonts.poppins(fontSize: 25, fontWeight: FontWeight.w500),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
@@ -44,7 +48,9 @@ class _ReminderPageState extends State<ReminderPage> {
       ),
       body: ListView.separated(
           separatorBuilder: (context, index) {
-            return const Divider();
+            return const Divider(
+              color: Colors.grey,
+            );
           },
           itemCount: remiderlist.length,
           itemBuilder: (context, index) {

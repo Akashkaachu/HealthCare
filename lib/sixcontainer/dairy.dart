@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/sixcontainer/util/dialogbox.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:lottie/lottie.dart';
 
 class DiaryPge extends StatefulWidget {
   const DiaryPge({super.key});
@@ -81,15 +82,20 @@ class _DiaryPgeState extends State<DiaryPge> {
             },
             icon: const Icon(Icons.arrow_back_ios)),
         backgroundColor: const Color(0xff7a73e7),
-        title: const Text("DIARY"),
+        title: Text(
+          "DIARY",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Center(
         child: db.diaryList.isEmpty
-            ? Text(
-                ' No Diary is Not Found ',
-                style: GoogleFonts.poppins(),
-              )
+            ? LottieBuilder.asset(
+                "assets/animation/Animation - 1701342881072.json")
             : Container(
                 color: const Color(0xff7a73e7).withOpacity(0.09),
                 child: ListView.builder(

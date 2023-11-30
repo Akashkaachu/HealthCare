@@ -52,7 +52,14 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff7a73e7),
-          title: const Text("Medicine Remainder"),
+          title: Text(
+            "Medicine Remainder",
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 23,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           centerTitle: true,
           leading: IconButton(
               onPressed: () {

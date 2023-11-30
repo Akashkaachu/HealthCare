@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DisplayFirstAidScrn extends StatefulWidget {
@@ -28,7 +29,14 @@ class _DisplayFirstAidScrnState extends State<DisplayFirstAidScrn> {
             },
             icon: const Icon(Icons.arrow_back_ios)),
         automaticallyImplyLeading: false,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
       ),

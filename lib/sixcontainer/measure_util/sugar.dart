@@ -24,7 +24,14 @@ class _SugarLevelMeasurement extends State<SugarLevelMeasurement> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: const Text("SUGAR LEVEL"),
+        title: Text(
+          "SUGAR LEVEL",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
         automaticallyImplyLeading: false,
@@ -38,17 +45,16 @@ class _SugarLevelMeasurement extends State<SugarLevelMeasurement> {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(0),
               child: Image.asset(
                 "assets/images/sugarlevelimage.png",
-                height: size.height / 2 - 40,
                 width: size.width,
               ),
             ),
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-                  height: 400,
+                  height: 240,
                   child: FutureBuilderclass3(
                     key: _futureBuilderKeyHeight,
                   )),
@@ -151,11 +157,11 @@ class BarChartSample4State extends State<BarChartSample4> {
     super.initState();
     List<BarChartGroupData> heightItems = [];
     for (var i = 0; i < widget.passingHeightVal.length; i++) {
-      double value = (widget.passingHeightVal[i]['items']).toDouble() / 15;
-      if (value > 8) {
-        widget.leftBarColor = Colors.green;
-      } else if (value < 8) {
+      double value = (widget.passingHeightVal[i]['items']).toDouble() / 20;
+      if (value > 5) {
         widget.leftBarColor = Colors.red;
+      } else {
+        widget.leftBarColor = Colors.green;
       }
       setState(() {
         heightItems.add(makeGroupData(i, value));
@@ -173,7 +179,7 @@ class BarChartSample4State extends State<BarChartSample4> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 19,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -244,9 +250,9 @@ class BarChartSample4State extends State<BarChartSample4> {
     if (value == 0) {
       text = '0';
     } else if (value == 8) {
-      text = '70 mm/Dl';
-    } else if (value == 15) {
-      text = '100 mm/Dl ';
+      text = 'Nm';
+    } else if (value == 20) {
+      text = ' Hg';
     } else {
       return Container();
     }
@@ -378,6 +384,7 @@ DateTime selectedTime = DateTime.now();
 List<HeightModelClass> storeFtrGetHeight = [];
 
 final TextEditingController heightEditingController = TextEditingController();
+final formkeySugar = GlobalKey<FormState>();
 
 class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
   @override
@@ -435,9 +442,9 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                     onPressed: () async {
                       final DateTime? dateTime = await showDatePicker(
                           context: context,
-                          initialDate: selectedDate,
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(1980),
-                          lastDate: DateTime(3000));
+                          lastDate: DateTime.now());
                       if (dateTime != null) {
                         setState(() {
                           selectedDate = dateTime;
@@ -506,13 +513,35 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
             Padding(
               padding: const EdgeInsets.only(left: 45, right: 45),
               child: SizedBox(
-                height: 44,
-                child: TextFormField(
-                  controller: heightEditingController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      label: Text("Sugar level in   mg/Dl")),
+                height: 54,
+                child: Form(
+                  key: formkeySugar,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter your Sugar level";
+                      } else {
+                        try {
+                          int sugarValue = int.parse(value);
+                          if (value.length >= 2 &&
+                              value.length <= 3 &&
+                              sugarValue >= 35 &&
+                              sugarValue <= 380) {
+                            return null;
+                          } else {
+                            return "Please enter valid Sugar Value";
+                          }
+                        } catch (e) {
+                          return "Please enter a Sugar Value";
+                        }
+                      }
+                    },
+                    controller: heightEditingController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        label: Text("Sugar level in   mg/Dl")),
+                  ),
                 ),
               ),
             ),
@@ -531,7 +560,7 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
             //     ),
             //   ],
             // ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 55),
             SizedBox(
                 width: widget.size.width - 30,
                 child: ElevatedButton(
@@ -540,33 +569,35 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                       Color(0xff7a73e7),
                     )),
                     onPressed: () async {
-                      final height = HeightModelClass(
-                          date: selectedDate,
-                          time: selectedTime,
-                          email: email!,
-                          textController:
-                              double.parse(heightEditingController.text));
+                      if (formkeySugar.currentState!.validate()) {
+                        final height = HeightModelClass(
+                            date: selectedDate,
+                            time: selectedTime,
+                            email: email!,
+                            textController:
+                                double.parse(heightEditingController.text));
 
-                      for (var i in storeFtrGetHeight) {
-                        if (DateFormat.jm().format(i.time) ==
-                                DateFormat.jm().format(height.time) &&
-                            formate.format(i.date) ==
-                                formate.format(height.date)) {
-                          showSnackBarImage(
-                              context, "Already Exit", Colors.red);
-                          Navigator.pop(context);
-                          return;
+                        for (var i in storeFtrGetHeight) {
+                          if (DateFormat.jm().format(i.time) ==
+                                  DateFormat.jm().format(height.time) &&
+                              formate.format(i.date) ==
+                                  formate.format(height.date)) {
+                            showSnackBarImage(
+                                context, "Already Exit", Colors.red);
+                            Navigator.pop(context);
+                            return;
+                          }
                         }
+                        await addSugarLevelDetails(height, context);
+                        //new7
+                        _futureBuilderKeyHeight.currentState!.refresh();
+                        final futureBuilderState =
+                            _futureBuilderKeyHeight.currentState;
+                        if (futureBuilderState != null) {
+                          futureBuilderState.refresh();
+                        }
+                        Navigator.pop(context);
                       }
-                      await addSugarLevelDetails(height, context);
-                      //new7
-                      _futureBuilderKeyHeight.currentState!.refresh();
-                      final futureBuilderState =
-                          _futureBuilderKeyHeight.currentState;
-                      if (futureBuilderState != null) {
-                        futureBuilderState.refresh();
-                      }
-                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Save",

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -59,7 +61,14 @@ class _EditReminderPgeState extends State<EditReminderPge> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff7a73e7),
-          title: const Text("Edit Reminder"),
+          title: Text(
+            "Edit Reminder".toUpperCase(),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 25,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           centerTitle: true,
           leading: IconButton(
               onPressed: () {

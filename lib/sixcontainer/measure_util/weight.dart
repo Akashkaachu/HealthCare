@@ -23,7 +23,14 @@ class _WeightPageState extends State<WeightPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("WEIGHT"),
+        title: Text(
+          "WEIGHT",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: const Color(0xff7a73e7),
@@ -34,12 +41,12 @@ class _WeightPageState extends State<WeightPage> {
               borderRadius: BorderRadius.circular(4),
               child: Image.asset(
                 "assets/images/weightmeasuring.png",
-                height: size.height / 2 - 40,
+                width: size.width,
               )),
           const SizedBox(height: 40),
           Center(
             child: SizedBox(
-              height: 400,
+              height: 240,
               child: FutureBuilderclass4(
                 key: _futureBuilderKeyWeight,
               ),
@@ -123,9 +130,7 @@ class BarChartSample5 extends StatefulWidget {
     required this.passingWeightVal,
   });
   final List<Map<String, dynamic>> passingWeightVal;
-  Color leftBarColor = Colors.yellow;
-  final Color rightBarColor = Colors.green;
-  final Color avgColor = Colors.blue;
+  Color leftBarColor = Colors.red;
 
   @override
   State<StatefulWidget> createState() => BarChartSample5State();
@@ -145,10 +150,10 @@ class BarChartSample5State extends State<BarChartSample5> {
     super.initState();
     List<BarChartGroupData> weightItems = [];
     for (var i = 0; i < widget.passingWeightVal.length; i++) {
-      double value = (widget.passingWeightVal[i]['calorie']).toDouble() / 10;
-      if (value > 8) {
+      double value = (widget.passingWeightVal[i]['calorie']).toDouble() / 22;
+      if (value < 5) {
         widget.leftBarColor = Colors.green;
-      } else if (value < 8) {
+      } else {
         widget.leftBarColor = Colors.red;
       }
       setState(() {
@@ -167,14 +172,14 @@ class BarChartSample5State extends State<BarChartSample5> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 15,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             const SizedBox(
-              height: 38,
+              height: 3,
             ),
             Expanded(
               child: BarChart(
@@ -185,49 +190,7 @@ class BarChartSample5State extends State<BarChartSample5> {
                       tooltipBgColor: Colors.grey,
                       getTooltipItem: (a, b, c, d) => null,
                     ),
-                    touchCallback: (FlTouchEvent event, response) {
-                      //     if (response == null || response.spot == null) {
-                      //       setState(() {
-                      //         touchedGroupIndex = -1;
-                      //         showingBarGroups = List.of(rawBarGroups);
-                      //       });
-                      //       return;
-                      //     }
-
-                      //     touchedGroupIndex = response.spot!.touchedBarGroupIndex;
-
-                      //     setState(() {
-                      //       if (!event.isInterestedForInteractions) {
-                      //         touchedGroupIndex = -1;
-                      //         showingBarGroups = List.of(rawBarGroups);
-                      //         return;
-                      //       }
-                      //       showingBarGroups = List.of(rawBarGroups);
-                      //       if (touchedGroupIndex != -1) {
-                      //         var sum = 0.0;
-                      //         for (final rod
-                      //             in showingBarGroups[touchedGroupIndex].barRods) {
-                      //           sum += rod.toY;
-                      //         }
-                      //         final avg = sum /
-                      //             showingBarGroups[touchedGroupIndex]
-                      //                 .barRods
-                      //                 .length;
-
-                      //         showingBarGroups[touchedGroupIndex] =
-                      //             showingBarGroups[touchedGroupIndex].copyWith(
-                      //           barRods: showingBarGroups[touchedGroupIndex]
-                      //               .barRods
-                      //               .map((rod) {
-                      //             return rod.copyWith(
-                      //                 toY: avg, color: widget.avgColor);
-                      //           }).toList(),
-                      //         );
-                      //       }
-                      //     });
-                      //   },
-                      // ),
-                    },
+                    touchCallback: (FlTouchEvent event, response) {},
                   ),
                   titlesData: FlTitlesData(
                     show: true,
@@ -279,10 +242,10 @@ class BarChartSample5State extends State<BarChartSample5> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 10) {
-      text = '50 Weight';
-    } else if (value == 19) {
-      text = '110 Weight';
+    } else if (value == 4) {
+      text = 'Nm';
+    } else if (value == 13) {
+      text = 'Hg';
     } else {
       return Container();
     }
@@ -414,6 +377,7 @@ DateTime selectedTime = DateTime.now();
 List<WeightClassModel> storeFtrGetWeight = [];
 
 final TextEditingController weightEditingController = TextEditingController();
+final formkeyWeight = GlobalKey<FormState>();
 
 class _ShowBottumWeightSheetState extends State<ShowBottumWeightSheet> {
   @override
@@ -471,9 +435,9 @@ class _ShowBottumWeightSheetState extends State<ShowBottumWeightSheet> {
                     onPressed: () async {
                       final DateTime? dateTime = await showDatePicker(
                           context: context,
-                          initialDate: selectedDate,
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(1980),
-                          lastDate: DateTime(3000));
+                          lastDate: DateTime.now());
                       if (dateTime != null) {
                         setState(() {
                           selectedDate = dateTime;
@@ -542,13 +506,35 @@ class _ShowBottumWeightSheetState extends State<ShowBottumWeightSheet> {
             Padding(
               padding: const EdgeInsets.only(left: 45, right: 45),
               child: SizedBox(
-                height: 44,
-                child: TextFormField(
-                  controller: weightEditingController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      label: Text("Enter your Weight")),
+                height: 54,
+                child: Form(
+                  key: formkeyWeight,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter your Weight";
+                      } else {
+                        try {
+                          int weightValue = int.parse(value);
+                          if (value.length >= 2 &&
+                              value.length <= 3 &&
+                              weightValue >= 2 &&
+                              weightValue <= 500) {
+                            return null;
+                          } else {
+                            return "Please enter valid Weight";
+                          }
+                        } catch (e) {
+                          return "Please enter a Weight";
+                        }
+                      }
+                    },
+                    controller: weightEditingController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        label: Text("Enter your Weight")),
+                  ),
                 ),
               ),
             ),
@@ -576,32 +562,34 @@ class _ShowBottumWeightSheetState extends State<ShowBottumWeightSheet> {
                       Color(0xff7a73e7),
                     )),
                     onPressed: () async {
-                      final weight = WeightClassModel(
-                          date: selectedDate,
-                          time: selectedTime,
-                          controller:
-                              double.parse(weightEditingController.text),
-                          email: email!);
-                      for (var i in storeFtrGetWeight) {
-                        if (DateFormat.jm().format(i.time) ==
-                                DateFormat.jm().format(weight.time) &&
-                            formate.format(i.date) ==
-                                formate.format(weight.date)) {
-                          showSnackBarImage(
-                              context, "Already Exit", Colors.red);
-                          Navigator.pop(context);
-                          return;
+                      if (formkeyWeight.currentState!.validate()) {
+                        final weight = WeightClassModel(
+                            date: selectedDate,
+                            time: selectedTime,
+                            controller:
+                                double.parse(weightEditingController.text),
+                            email: email!);
+                        for (var i in storeFtrGetWeight) {
+                          if (DateFormat.jm().format(i.time) ==
+                                  DateFormat.jm().format(weight.time) &&
+                              formate.format(i.date) ==
+                                  formate.format(weight.date)) {
+                            showSnackBarImage(
+                                context, "Already Exit", Colors.red);
+                            Navigator.pop(context);
+                            return;
+                          }
                         }
+                        await addWeightDetails(weight, context);
+                        //new7
+                        _futureBuilderKeyWeight.currentState!.refresh();
+                        final futureBuilderState =
+                            _futureBuilderKeyWeight.currentState;
+                        if (futureBuilderState != null) {
+                          futureBuilderState.refresh();
+                        }
+                        Navigator.pop(context);
                       }
-                      await addWeightDetails(weight, context);
-                      //new7
-                      _futureBuilderKeyWeight.currentState!.refresh();
-                      final futureBuilderState =
-                          _futureBuilderKeyWeight.currentState;
-                      if (futureBuilderState != null) {
-                        futureBuilderState.refresh();
-                      }
-                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Save",

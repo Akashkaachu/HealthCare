@@ -35,7 +35,7 @@ class _ProfilePgeState extends State<ProfilePge> {
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BottomNavigatorBar(),
+                builder: (context) => const BottomNavigatorBar(),
               ));
             },
             icon: const Icon(Icons.arrow_back_ios_new_rounded)),

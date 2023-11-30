@@ -210,6 +210,17 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                     if (selectedImage != null) {
                                       final key = getKeyOfProfileSelfUpdate(
                                           widget.mydetails);
+                                      // String addressValue =
+                                      //     addressEditingcontrollerr
+                                      //             .text.isNotEmpty
+                                      //         ? addressEditingcontrollerr.text
+                                      //         : "Defau lt Address";
+
+                                      // String aboutValue =
+                                      //     tellUsEditingcontrollerr
+                                      //             .text.isNotEmpty
+                                      //         ? tellUsEditingcontrollerr.text
+                                      //         : "Default About";
                                       final value = PatientsDetails(
                                           name: nameEditingcontrollerr.text,
                                           email: emailEditingcontrollerr.text,
@@ -218,6 +229,7 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                               addressEditingcontrollerr.text,
                                           about: tellUsEditingcontrollerr.text,
                                           imagesrc: selectedImage!.path);
+
                                       updateEditedProfile(value, key);
                                       SharedPreferenceClass.saveuserEmailfun(
                                           emailEditingcontrollerr.text);

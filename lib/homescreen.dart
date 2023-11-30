@@ -14,6 +14,7 @@ import 'package:healthcare/sixcontainer/favorite.dart';
 import 'package:healthcare/sixcontainer/firstaid.dart';
 import 'package:healthcare/sixcontainer/measure_util/measure.dart';
 import 'package:healthcare/sixcontainer/patient.dart';
+import 'package:healthcare/sixcontainer/util/settings.dart';
 
 class BottomNavigatorBar extends StatefulWidget {
   const BottomNavigatorBar({
@@ -28,7 +29,8 @@ int currentindex = 1;
 List<Widget> pages = [
   const MeasurePge(),
   const HomePage(),
-  const FavoratePge()
+  const FavoratePge(),
+  const SettingsPage()
 ];
 
 class _BottomNavigatorBarState extends State<BottomNavigatorBar> {
@@ -57,6 +59,10 @@ class _BottomNavigatorBarState extends State<BottomNavigatorBar> {
             ),
             Icon(
               Icons.favorite,
+              color: Color(0xff7a73e7),
+            ),
+            Icon(
+              Icons.settings,
               color: Color(0xff7a73e7),
             )
           ]),
@@ -99,7 +105,7 @@ class _HomePageState extends State<HomePage> {
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 25,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
             centerTitle: true,
@@ -133,11 +139,12 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 5),
                       CarouselSlider(
                           items: const [
-                            cousersWidgets(image: "assets/images/D&P.jpg"),
+                            cousersWidgets(
+                                image:
+                                    "assets/images/Elderly woman checking hospital details.jpg"),
                             cousersWidgets(
                                 image: "assets/images/courserpic1.jpg"),
-                            cousersWidgets(
-                                image: "assets/images/courserpic2.jpeg"),
+                            cousersWidgets(image: "assets/images/D&P.jpg"),
                           ],
                           options: CarouselOptions(
                               height: 200,

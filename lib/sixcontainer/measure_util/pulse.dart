@@ -33,7 +33,8 @@ class _PulsePageState extends State<PulsePage> {
             icon: const Icon(Icons.arrow_back_ios)),
         title: Text(
           "PULSE",
-          style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w500),
+          style: GoogleFonts.poppins(
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
@@ -44,7 +45,7 @@ class _PulsePageState extends State<PulsePage> {
             SizedBox(
               width: size.width,
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(0),
                   child: Image.asset(
                     'assets/images/DocPulChk.png',
                     fit: BoxFit.fill,
@@ -53,7 +54,7 @@ class _PulsePageState extends State<PulsePage> {
             const SizedBox(height: 40),
             Center(
               child: SizedBox(
-                  height: 400,
+                  height: 300,
                   child: FutureBuilderclass(
                     //new2
                     //new6
@@ -139,8 +140,6 @@ class BarChartSample3 extends StatefulWidget {
   final List<Map<String, dynamic>> passingPulseVal;
   BarChartSample3({super.key, required this.passingPulseVal});
   Color leftBarColor = Colors.red;
-  final Color rightBarColor = Colors.green;
-  final Color avgColor = Colors.blue;
 
   State<StatefulWidget> createState() => BarChartSample3State();
 }
@@ -159,15 +158,16 @@ class BarChartSample3State extends State<BarChartSample3> {
     super.initState();
     List<BarChartGroupData> pulseItems = [];
     for (var i = 0; i < widget.passingPulseVal.length; i++) {
-      double value = (widget.passingPulseVal[i]['count']).toDouble() / 10;
+      double value = (widget.passingPulseVal[i]['count']).toDouble() / 19;
       print(value);
-      if (value > 8) {
+      if (value >= 4) {
         widget.leftBarColor = Colors.red;
-      } else if (value == 7.2) {
+      } else if (value <= 4) {
         widget.leftBarColor = Colors.green;
-      } else if (value < 8) {
-        widget.leftBarColor = Colors.yellow;
       }
+      // else if (value < 8) {
+      //   widget.leftBarColor = Colors.yellow;
+      // }
       setState(() {
         pulseItems.add(makeGroupData(i, value));
       });
@@ -184,7 +184,7 @@ class BarChartSample3State extends State<BarChartSample3> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 19,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -251,9 +251,9 @@ class BarChartSample3State extends State<BarChartSample3> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 7) {
+    } else if (value == 4) {
       text = 'Nm';
-    } else if (value == 14) {
+    } else if (value == 7) {
       text = 'Hg';
     } else {
       return Container();
@@ -441,9 +441,9 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                     onPressed: () async {
                       final DateTime? dateTime = await showDatePicker(
                           context: context,
-                          initialDate: selectedDate,
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(1980),
-                          lastDate: DateTime(3000));
+                          lastDate: DateTime.now());
                       if (dateTime != null) {
                         setState(() {
                           selectedDate = dateTime;
@@ -513,7 +513,7 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
             Padding(
               padding: const EdgeInsets.only(left: 45, right: 45),
               child: SizedBox(
-                height: 44,
+                height: 54,
                 child: Form(
                   key: formkey,
                   child: TextFormField(
@@ -521,10 +521,20 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Enter Pulse rate";
-                      } else if (value.length >= 50 && value.length <= 150) {
-                        return "you enterd the pulse rate";
                       } else {
-                        return null;
+                        try {
+                          int pulseValue = int.parse(value);
+                          if (value.length >= 2 &&
+                              value.length <= 3 &&
+                              pulseValue >= 50 &&
+                              pulseValue <= 220) {
+                            return null;
+                          } else {
+                            return "Please enter valid pulse";
+                          }
+                        } catch (e) {
+                          return "Please enter a valid number";
+                        }
                       }
                     },
                     keyboardType: TextInputType.phone,

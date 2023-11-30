@@ -26,8 +26,8 @@ class DialogBox extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              MyBotton(text: "Cancel ", onPressed: onCancel),
               MyBotton(text: "Save", onPressed: onSave),
-              MyBotton(text: "Cancel ", onPressed: onCancel)
             ],
           )
         ]),

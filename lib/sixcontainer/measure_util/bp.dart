@@ -23,7 +23,14 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("BLOOD PRESSURE"),
+        title: Text(
+          "BLOOD PRESSURE",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
         elevation: 0,
@@ -42,10 +49,10 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
                     width: size.width - 450,
                   )),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 4),
             Center(
               child: SizedBox(
-                  height: 400,
+                  height: 380,
                   child: FutureBuilderclass2(
                     //new2
                     //new6
@@ -148,12 +155,11 @@ class BarChartSample2State extends State<BarChartSample2> {
     List<BarChartGroupData> items = [];
 
     for (var i = 0; i < widget.passingGraphVal.length; i++) {
-      double value = (widget.passingGraphVal[i]['mm']).toDouble() / 15;
-      if (value > 12) {
+      double value = (widget.passingGraphVal[i]['mm']).toDouble() / 25;
+
+      if (value > 5) {
         widget.leftBarColor = Colors.red;
-      } else if (value == 12) {
-        widget.leftBarColor = Colors.yellow;
-      } else if (value < 12) {
+      } else {
         widget.leftBarColor = Colors.green;
       }
       setState(() {
@@ -173,7 +179,7 @@ class BarChartSample2State extends State<BarChartSample2> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -236,9 +242,9 @@ class BarChartSample2State extends State<BarChartSample2> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value == 8) {
+    } else if (value == 5) {
       text = 'Nm';
-    } else if (value == 15) {
+    } else if (value == 7) {
       text = 'Hg';
     } else {
       return Container();
@@ -496,9 +502,9 @@ class _ShowBottumSheetState extends State<ShowBottumSheet> {
                     onPressed: () async {
                       final DateTime? dateTime = await showDatePicker(
                           context: context,
-                          initialDate: selectedDate,
+                          initialDate: DateTime.now(),
                           firstDate: DateTime(1980),
-                          lastDate: DateTime(3000));
+                          lastDate: DateTime.now());
                       if (dateTime != null) {
                         setState(() {
                           selectedDate = dateTime;

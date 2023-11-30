@@ -265,6 +265,7 @@ Future<void> addImagePdfTypes(
     StoreImgPdfClassModel imgpdf, BuildContext context) async {
   Hive.initFlutter();
   final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
+  print(imgpdf.pdfName);
   final index = await box.add(imgpdf);
   if (index >= 0) {
     showSnackBarImage(context, "Successfully saved", Colors.green);
@@ -286,9 +287,75 @@ Future<List<StoreImgPdfClassModel>> getImagePdfTypeDtls(
   return gettedImgPdfDtls;
 }
 
-// void showSnackBarImage(BuildContext c, String content, Color color) {
-//   ScaffoldMessenger.of(c).showSnackBar(SnackBar(
-//     content: Text(content),
-//     backgroundColor: color,
-//   ));
-// }
+//delete patients recorder ...folders from  hive...
+Future<int> getKeyFromHive(PdfPatientClassModel deletingModel) async {
+  final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
+  int key = box.keyAt(box.values.toList().indexOf(deletingModel));
+  return key;
+}
+
+Future<void> deleteFolderFromHive(int key) async {
+  final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
+  box.delete(key);
+}
+
+//delete patient recorder...image & pdf from hive
+
+Future<int> getKeyOfImageAndPdf(StoreImgPdfClassModel ImgPdfModel) async {
+  final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
+  final keys = box.keyAt(box.values.toList().indexOf(ImgPdfModel));
+  return keys;
+}
+
+Future<void> deleteImgAndPdgFrmHive(int key) async {
+  final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
+  box.delete(key);
+}
+
+//delete Blood pressure from hive
+Future<int> getKeysOfBPFromHive(BloodPressureModel BAndPModel) async {
+  final box = await Hive.openBox<BloodPressureModel>("bloodBox");
+  final key = box.keyAt(box.values.toList().indexOf(BAndPModel));
+  return key;
+}
+
+Future<void> deleteBAndPModel(int key) async {
+  final box = await Hive.openBox<BloodPressureModel>("bloodBox");
+  box.delete(key);
+}
+
+//deleting pulse from hive
+Future<int> getKeyFormHive(PulseClassModel pulseKeyModel) async {
+  final box = await Hive.openBox<PulseClassModel>("pulseBox");
+  final key = box.keyAt(box.values.toList().indexOf(pulseKeyModel));
+  return key;
+}
+
+Future<void> deletePulseFromHive(int key) async {
+  final box = await Hive.openBox<PulseClassModel>("pulseBox");
+  box.delete(key);
+}
+//delete weight from hive
+
+Future<int> getKeyOfWeight(WeightClassModel weightModel) async {
+  final box = await Hive.openBox<WeightClassModel>("WeightBox");
+  final key = box.keyAt(box.values.toList().indexOf(weightModel));
+  return key;
+}
+
+Future<void> deleteWeightFromHive(int key) async {
+  final box = await Hive.openBox<WeightClassModel>("WeightBox");
+  box.delete(key);
+}
+
+//delete sugar from hive(heightModelClass paranjal ..aadhyam height ayirunn pinne ath  change cheyth sugar aaki appo error varanda vachit aan heightmodel enn vachath)
+Future<int> getKeyOfSugar(HeightModelClass sugarModel) async {
+  final box = await Hive.openBox<HeightModelClass>("sugarBox");
+  final key = box.keyAt(box.values.toList().indexOf(sugarModel));
+  return key;
+}
+
+Future<void> deleteSugarFromHive(int key) async {
+  final box = await Hive.openBox<HeightModelClass>("sugarBox");
+  box.delete(key);
+}

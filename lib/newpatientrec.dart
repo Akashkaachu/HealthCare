@@ -7,6 +7,7 @@ import 'package:healthcare/editprofile.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/storeimgpdfmodel.dart';
 import 'package:healthcare/profilepge.dart';
+import 'package:lottie/lottie.dart';
 import 'package:open_file/open_file.dart';
 
 class DisplayPatientRecorder extends StatefulWidget {
@@ -96,46 +97,71 @@ class _DisplayPatientRecorderState extends State<DisplayPatientRecorder> {
               return const Text("Error");
             } else {
               List<StoreImgPdfClassModel> imgPdgList = snapshot.data!;
+              for (var element in imgPdgList) {
+                print('${element.folderName};;;${element.pdfName}');
+              }
               return Expanded(
-                child: ListView.builder(
-                  itemCount: imgPdgList.length,
-                  itemBuilder: (context, index) {
-                    if (imgPdgList[index].type == 'image') {
-                      return Container(
-                          width: size.width,
-                          child:
-                              Image.file(File(imgPdgList[index].folderPath)));
-                    } else if (imgPdgList[index].type == 'pdf') {
-                      return InkWell(
-                        onTap: () async {
-                          try {
-                            await OpenFile.open(imgPdgList[index].folderPath);
-                          } catch (e) {
-                            // Handle errors or log them
-                            print("Error opening file: $e");
+                child: snapshot.data!.isEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          LottieBuilder.asset(
+                              "assets/animation/Animation - 1701342881072.json"),
+                        ],
+                      )
+                    : ListView.builder(
+                        itemCount: imgPdgList.length,
+                        itemBuilder: (context, index) {
+                          if (imgPdgList[index].type == 'image') {
+                            return InkWell(
+                              onLongPress: () {
+                                imgPdgAlertDialogueBox(
+                                    context, imgPdgList[index]);
+                              },
+                              child: Container(
+                                  width: size.width,
+                                  child: Image.file(
+                                      File(imgPdgList[index].folderPath))),
+                            );
+                          } else if (imgPdgList[index].type == 'pdf') {
+                            return InkWell(
+                              onLongPress: () {
+                                imgPdgAlertDialogueBox(
+                                    context, imgPdgList[index]);
+                              },
+                              onTap: () async {
+                                try {
+                                  await OpenFile.open(
+                                      imgPdgList[index].folderPath);
+                                } catch (e) {
+                                  // Handle errors or log them
+                                  print("Error opening file: $e");
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: SizedBox(
+                                  height: 35,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xff7a73e7)
+                                            .withOpacity(0.6),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    width: size.width,
+                                    child: Row(children: [
+                                      const Icon(
+                                        Icons.picture_as_pdf,
+                                        color: Colors.red,
+                                      ),
+                                      Text(imgPdgList[index].pdfName!)
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                            );
                           }
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Color(0xff7a73e7),
-                            width: size.width,
-                            height: 70,
-                            child: Row(children: [
-                              const Icon(
-                                Icons.picture_as_pdf,
-                                color: Colors.red,
-                              ),
-                              Text(imgPdgList[index].pdfName!)
-                            ]),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                      ),
               );
             }
           },
@@ -155,12 +181,12 @@ void uploadPdf(String folderName, BuildContext context) async {
         email: email!,
         type: 'pdf');
     await addImagePdfTypes(model, context);
-
+    print(model.pdfName);
     showSnackBarImage(context, "PDF successfully saved", Colors.green);
   }
 }
 
-//file picker function
+//file picker function for PDF
 Future<PickedFile?> pdfPickerFromFleMnger() async {
   FilePickerResult? result = await FilePicker.platform
       .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
@@ -176,4 +202,45 @@ class PickedFile {
   final File file;
   final String fileName;
   PickedFile({required this.file, required this.fileName});
+}
+
+//alert box
+void imgPdgAlertDialogueBox(
+    BuildContext context, StoreImgPdfClassModel ImgPdfModel) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("FILES"),
+        content: Text(
+          "Do you want to delete the file?",
+          style: GoogleFonts.poppins(color: Colors.red),
+        ),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff7a73e7)),
+              ),
+              child: const Text("Cancel")),
+          ElevatedButton(
+              onPressed: () async {
+                final gettedKeyOfImgPdf =
+                    await getKeyOfImageAndPdf(ImgPdfModel);
+                await deleteImgAndPdgFrmHive(gettedKeyOfImgPdf);
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff7a73e7)),
+              ),
+              child: const Text("Delete"))
+        ],
+      );
+    },
+  );
 }

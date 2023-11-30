@@ -21,13 +21,14 @@ class StoreImgPdfClassModelAdapter extends TypeAdapter<StoreImgPdfClassModel> {
       folderPath: fields[1] as String,
       email: fields[2] as String,
       type: fields[4] as String,
+      pdfName: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StoreImgPdfClassModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.folderName)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class StoreImgPdfClassModelAdapter extends TypeAdapter<StoreImgPdfClassModel> {
       ..writeByte(2)
       ..write(obj.email)
       ..writeByte(4)
-      ..write(obj.type);
+      ..write(obj.type)
+      ..writeByte(5)
+      ..write(obj.pdfName);
   }
 
   @override

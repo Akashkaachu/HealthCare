@@ -13,10 +13,11 @@ class StoreImgPdfClassModel {
   String type;
   @HiveField(5)
   String? pdfName;
-  StoreImgPdfClassModel(
-      {required this.folderName,
-      required this.folderPath,
-      required this.email,
-      required this.type,
-      this.pdfName});
+  StoreImgPdfClassModel({
+    required this.folderName,
+    required this.folderPath,
+    required this.email,
+    required this.type,
+    required this.pdfName,
+  });
 }

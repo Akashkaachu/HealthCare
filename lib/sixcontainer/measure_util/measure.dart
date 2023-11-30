@@ -49,7 +49,14 @@ class _MeasurePgeState extends State<MeasurePge> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff7a73e7),
-        title: const Text("MEASUREMENTS"),
+        title: Text(
+          "MEASUREMENTS",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
       ),
       floatingActionButton: SpeedDial(

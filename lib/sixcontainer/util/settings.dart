@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FavoratePge extends StatefulWidget {
-  const FavoratePge({super.key});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
 
   @override
-  State<FavoratePge> createState() => _FavoratePgeState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _FavoratePgeState extends State<FavoratePge> {
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: const Color(0xff7a73e7),
         title: Text(
-          "Favorite".toUpperCase(),
+          "SETTINGS",
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: true,
       ),
     );
   }
