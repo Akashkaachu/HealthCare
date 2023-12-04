@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/editprofile.dart';
@@ -25,6 +27,8 @@ class _ProfilePgeState extends State<ProfilePge> {
     getUserDetails();
     super.initState();
   }
+
+  PatientsDetails patient = PatientsDetails(name: '', email: '', password: '');
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +65,8 @@ class _ProfilePgeState extends State<ProfilePge> {
                   CircleAvatar(
                     backgroundColor: const Color(0xff7a73e7),
                     radius: 60,
-                    backgroundImage: selectedImage != null
-                        ? FileImage(selectedImage!)
+                    backgroundImage: patient.imagesrc != null
+                        ? FileImage(File(patient.imagesrc!))
                         : null,
                     child: GestureDetector(
                       child: Stack(children: <Widget>[

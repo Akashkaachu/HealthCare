@@ -136,10 +136,12 @@ class _SignUpPgeState extends State<SignUpPge> {
                               name: nameEditingController.text,
                               password: passwordEditingController.text,
                             );
+
                             SharedPreferenceClass.saveuserLoggedfun(true);
                             SharedPreferenceClass.saveuserEmailfun(
                                 emailEditingController.text);
                             addPatientDetails(rogi);
+                            clearAllSignUpFld();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) =>
@@ -151,7 +153,7 @@ class _SignUpPgeState extends State<SignUpPge> {
                                 "Please Check both Password and Confirm Password");
                           }
                         }
-                        clearAllSignUpFld();
+                        // clearAllSignUpFld();
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color?>(

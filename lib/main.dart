@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthcare/model/bpmodel.dart';
+import 'package:healthcare/model/favoritemodel.dart';
 import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
@@ -36,6 +37,9 @@ Future<void> main() async {
 //storeImagePdfModel
   Hive.registerAdapter<StoreImgPdfClassModel>(StoreImgPdfClassModelAdapter());
   await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
+  //favorate
+  Hive.registerAdapter<FavorateClassModel>(FavorateClassModelAdapter());
+  await Hive.openBox<FavorateClassModel>("favorateBox");
 //hive    for  diary
   var box = await Hive.openBox('mybox');
   runApp(const MyApp());

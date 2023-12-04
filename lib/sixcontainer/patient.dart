@@ -1,11 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
+import 'package:healthcare/model/favoritemodel.dart';
 import 'package:healthcare/model/pdfpatientrecorder.dart';
-import 'package:healthcare/newpatientrec.dart';
+import 'package:healthcare/sixcontainer/newpatientrec.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/sixcontainer/addremainder.dart';
 import 'package:lottie/lottie.dart';
@@ -19,7 +18,8 @@ class PatientRecPge extends StatefulWidget {
 
 TextEditingController ptEdiditinRecorder = TextEditingController();
 
-List<PdfPatientClassModel> getstoreFtrFuction = [];
+List<PdfPatientClassModel> getstoreFtrList = [];
+List<FavorateClassModel> getFavoratesList = [];
 bool isFolder = false;
 int? gettedKey;
 
@@ -27,13 +27,21 @@ class _PatientRecPgeState extends State<PatientRecPge> {
   @override
   void initState() {
     displayFutureFolderPatientDtls();
+    displayGetFavorateList();
     super.initState();
   }
 
   void displayFutureFolderPatientDtls() async {
     final storeFtrFuction = await getFolderPatientRecDetails(email!);
     setState(() {
-      getstoreFtrFuction = storeFtrFuction;
+      getstoreFtrList = storeFtrFuction;
+    });
+  }
+
+  void displayGetFavorateList() async {
+    final value = await getFavorateDetails(email!);
+    setState(() {
+      getFavoratesList = value;
     });
   }
 
@@ -56,16 +64,27 @@ class _PatientRecPgeState extends State<PatientRecPge> {
       body: Column(
         children: [
           Expanded(
-            child: getstoreFtrFuction.isEmpty
+            child: getstoreFtrList.isEmpty
                 ? LottieBuilder.asset(
                     "assets/animation/Animation - 1701342007210.json")
                 : ListView.separated(
-                    itemCount: getstoreFtrFuction.length,
+                    itemCount: getstoreFtrList.length,
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 10),
                     itemBuilder: (context, index) {
-                      PdfPatientClassModel pdfFolder =
-                          getstoreFtrFuction[index];
+                      PdfPatientClassModel pdfFolder = getstoreFtrList[index];
+                      bool? isLove;
+                      FavorateClassModel? deleteFavModel;
+                      for (var i in getFavoratesList) {
+                        if (i.path == pdfFolder.Foldername) {
+                          isLove = true;
+                          deleteFavModel = i;
+
+                          break;
+                        } else {
+                          isLove = false;
+                        }
+                      }
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -79,11 +98,38 @@ class _PatientRecPgeState extends State<PatientRecPge> {
                             endActionPane: ActionPane(
                                 motion: const StretchMotion(),
                                 children: [
+                                  const SizedBox(width: 5),
+                                  SlidableAction(
+                                    borderRadius: BorderRadius.circular(10),
+                                    onPressed: (context) async {
+                                      print(isLove);
+                                      if (isLove == true) {
+                                        final key = await getKeyOfFavorite(
+                                            deleteFavModel!);
+                                        await deleteFavoriteUsingKey(key);
+                                        displayGetFavorateList();
+                                      } else {
+                                        final getFavClass = FavorateClassModel(
+                                            email: email!,
+                                            type: 'folder',
+                                            path: pdfFolder.Foldername);
+                                        await addFavorateDetails(
+                                            getFavClass, context);
+                                        displayGetFavorateList();
+                                      }
+                                    },
+                                    label: 'Fav',
+                                    icon: isLove == true
+                                        ? Icons.favorite_sharp
+                                        : Icons.favorite_outline_sharp,
+                                    spacing: 5,
+                                    backgroundColor: Colors.yellow,
+                                  ),
+                                  const SizedBox(width: 5),
                                   SlidableAction(
                                     borderRadius: BorderRadius.circular(10),
                                     onPressed: (context) async {
                                       await alerting(context, index, pdfFolder);
-
                                       displayFutureFolderPatientDtls();
                                     },
                                     label: 'Delete',
@@ -151,7 +197,7 @@ class _PatientRecPgeState extends State<PatientRecPge> {
                             0xff7a73e7), // Change this to your desired background color
                       ),
                       onPressed: () async {
-                        for (var i in getstoreFtrFuction) {
+                        for (var i in getstoreFtrList) {
                           if (i.Foldername.trim() ==
                               ptEdiditinRecorder.text.trim()) {
                             isFolder = true;

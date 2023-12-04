@@ -9,7 +9,7 @@ class DialogBox extends StatelessWidget {
       required this.controller,
       required this.onSave,
       required this.onCancel});
-
+  final diaryKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -18,16 +18,35 @@ class DialogBox extends StatelessWidget {
         height: 150,
         child:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), hintText: "Add a new diary"),
+          Form(
+            key: diaryKey,
+            child: TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Enter your Diary";
+                } else if (value.length > 30) {
+                  return "Enter only less than 40 words";
+                } else {
+                  return null;
+                }
+              },
+              controller: controller,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: "Add a new diary"),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               MyBotton(text: "Cancel ", onPressed: onCancel),
-              MyBotton(text: "Save", onPressed: onSave),
+              MyBotton(
+                text: "Save",
+                onPressed: () {
+                  if (diaryKey.currentState!.validate()) {
+                    onSave!();
+                  }
+                },
+              ),
             ],
           )
         ]),

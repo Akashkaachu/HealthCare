@@ -51,7 +51,7 @@ class _DiaryPgeState extends State<DiaryPge> {
         builder: (context) {
           return DialogBox(
             controller: _controller,
-            onSave: saveNewTask,
+            onSave: () => saveNewTask(),
             onCancel: () => Navigator.of(context).pop(),
           );
         });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
+import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/signup.dart';
 
 class SignPge extends StatefulWidget {
@@ -18,6 +19,13 @@ final formkey = GlobalKey<FormState>();
 bool obscureText = true;
 
 class _SignPgeState extends State<SignPge> {
+  void clearAllLogin() {
+    setState(() {
+      emailEditingController.clear();
+      passwordEditingController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -126,6 +134,7 @@ class _SignPgeState extends State<SignPge> {
                           final email = emailEditingController.text;
                           final password = passwordEditingController.text;
                           checkCredentialsAndNavigate(email, password, context);
+                          clearAllLogin();
                         }
                       },
                       style: ButtonStyle(

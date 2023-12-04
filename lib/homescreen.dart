@@ -239,7 +239,6 @@ class _HomePageState extends State<HomePage> {
     print(OnePatientDetails!.imagesrc);
     setState(() {
       userdetails = OnePatientDetails;
-      print(userdetails.imagesrc);
     });
   }
 }

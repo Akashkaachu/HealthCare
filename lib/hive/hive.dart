@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/model/bpmodel.dart';
+import 'package:healthcare/model/favoritemodel.dart';
 import 'package:healthcare/model/heightmodel.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/model/patientmodel.dart';
@@ -44,17 +45,18 @@ void checkCredentialsAndNavigate(
       SharedPreferenceClass.saveuserLoggedfun(true);
       SharedPreferenceClass.saveuserEmailfun(email);
       showSnackBar(context, Colors.green, 'Successfully Logined ');
+      emailEditingController.clear();
+      passwordEditingController.clear();
       Navigator.of(context).pushReplacement(
-        // the new route
         MaterialPageRoute(
           builder: (BuildContext context) => const BottomNavigatorBar(),
         ),
       );
 
-      return; // Exit the loop since we found a match
+      // return; // Exit the loop since we found a match
     }
   }
-  showSnackBar(context, Colors.red, 'Invalid email and Password');
+  showSnackBar(context, Colors.red, 'Invalid email or Password');
   // If no match is found, display an error message or handle the login failure
   // ignore: avoid_print
   print("Invalid email or password");
@@ -212,17 +214,21 @@ Future<void> addWeightDetails(
   final index = await box.add(weight);
   if (index >= 0) {
     strdGetWeight(email!);
+    // ignore: use_build_context_synchronously
     showSnackBarImage(
         context, "The weight is successfully added", Colors.green);
   } else {
+    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Weight is already exist", Colors.red);
   }
 }
 
 Future<List<WeightClassModel>> getWeightStrDetails(String email) async {
+  // ignore: non_constant_identifier_names
   List<WeightClassModel> StoredWeightDtls = [];
   final box = await Hive.openBox<WeightClassModel>('WeightBox');
-  final WeightDatas = await box.values.toList();
+  // ignore: non_constant_identifier_names
+  final WeightDatas = box.values.toList();
   for (var i in WeightDatas) {
     if (i.email == email) {
       StoredWeightDtls.add(i);
@@ -237,9 +243,11 @@ Future<void> addFolderPatientRecDetails(
   final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
   final index = await box.add(pdfCreate);
   if (index >= 0) {
+    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Folder Seccessfully added", Colors.green);
     clearTxt();
   } else {
+    // ignore: use_build_context_synchronously
     showSnackBarImage(context, 'Folder Already Exist', Colors.red);
   }
 }
@@ -265,11 +273,12 @@ Future<void> addImagePdfTypes(
     StoreImgPdfClassModel imgpdf, BuildContext context) async {
   Hive.initFlutter();
   final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
-  print(imgpdf.pdfName);
   final index = await box.add(imgpdf);
   if (index >= 0) {
+    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Successfully saved", Colors.green);
   } else {
+    // ignore: use_build_context_synchronously
     showSnackBarImage(context, 'Invalid Pdf', Colors.red);
   }
 }
@@ -285,6 +294,25 @@ Future<List<StoreImgPdfClassModel>> getImagePdfTypeDtls(
     }
   }
   return gettedImgPdfDtls;
+}
+
+//favorate
+Future<void> addFavorateDetails(
+    FavorateClassModel favorateModel, BuildContext context) async {
+  final box = await Hive.openBox<FavorateClassModel>("favorateBox");
+  await box.add(favorateModel);
+}
+
+Future<List<FavorateClassModel>> getFavorateDetails(String email) async {
+  List<FavorateClassModel> getFavValues = [];
+  final box = await Hive.openBox<FavorateClassModel>("favorateBox");
+  final favVal = box.values.toList();
+  for (var i in favVal) {
+    if (i.email == email) {
+      getFavValues.add(i);
+    }
+  }
+  return getFavValues;
 }
 
 //delete patients recorder ...folders from  hive...
@@ -357,5 +385,61 @@ Future<int> getKeyOfSugar(HeightModelClass sugarModel) async {
 
 Future<void> deleteSugarFromHive(int key) async {
   final box = await Hive.openBox<HeightModelClass>("sugarBox");
+  box.delete(key);
+}
+
+//delete displayed reminder from hive
+
+Future<void> deleteReminder(int key) async {
+  final box = await Hive.openBox<MedicalRemainder>("medicalReminders");
+  box.delete(key);
+}
+
+//changing password
+Future<int> getKeyChangingPassword(PatientsDetails updatePassword) async {
+  final box = await Hive.openBox<PatientsDetails>("patient");
+  final key = box.keyAt(box.values.toList().indexOf(updatePassword));
+  return key;
+}
+
+Future<void> updateChangingPassword(
+    int key, PatientsDetails updatemodel) async {
+  final box = await Hive.openBox<PatientsDetails>("patient");
+  box.put(key, updatemodel);
+}
+
+//delete account
+Future<void> deleteuser(String email) async {
+  final box = await Hive.openBox<PatientsDetails>("patient");
+  final keyList = box.keys.where((key) {
+    final user = box.get(key);
+    return user != null && user.email == email;
+  }).toList();
+  for (var i in keyList) {
+    await box.delete(i);
+  }
+}
+
+Future<void> deleteUserAccount(String email) async {
+  final box = await Hive.openBox<PatientsDetails>("patients");
+  final keyforDlt = box.keys.where((key) {
+    final user = box.get(key);
+    return user != null && user.email == email;
+  }).toList();
+  for (final i in keyforDlt) {
+    await box.delete(i);
+  }
+}
+
+//get key favorite
+Future<int> getKeyOfFavorite(FavorateClassModel favoriteModel) async {
+  final box = await Hive.openBox<FavorateClassModel>("favorateBox");
+  final key = box.keyAt(box.values.toList().indexOf(favoriteModel));
+  return key;
+}
+
+//get delete
+Future<void> deleteFavoriteUsingKey(int key) async {
+  final box = await Hive.openBox<FavorateClassModel>("favorateBox");
   box.delete(key);
 }

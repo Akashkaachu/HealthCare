@@ -174,25 +174,13 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                               icons: Icons.email_outlined),
                           const SizedBox(height: 15),
                           ProfileTextfldWidget(
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Enter your Address";
-                                } else {
-                                  return null;
-                                }
-                              },
+                              validator: (value) {},
                               controller: addressEditingcontrollerr,
                               icons: Icons.home_outlined,
                               name: "Address"),
                           const SizedBox(height: 15),
                           ProfileTextfldWidget(
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Enter your Contents";
-                                } else {
-                                  return null;
-                                }
-                              },
+                              validator: (value) {},
                               controller: tellUsEditingcontrollerr,
                               icons: Icons.edit_note_outlined,
                               name: "Tell Us About Your Self"),
@@ -210,17 +198,7 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                     if (selectedImage != null) {
                                       final key = getKeyOfProfileSelfUpdate(
                                           widget.mydetails);
-                                      // String addressValue =
-                                      //     addressEditingcontrollerr
-                                      //             .text.isNotEmpty
-                                      //         ? addressEditingcontrollerr.text
-                                      //         : "Defau lt Address";
 
-                                      // String aboutValue =
-                                      //     tellUsEditingcontrollerr
-                                      //             .text.isNotEmpty
-                                      //         ? tellUsEditingcontrollerr.text
-                                      //         : "Default About";
                                       final value = PatientsDetails(
                                           name: nameEditingcontrollerr.text,
                                           email: emailEditingcontrollerr.text,
