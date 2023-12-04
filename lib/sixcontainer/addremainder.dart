@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:healthcare/alaram/localpushnotification.dart';
+import 'package:healthcare/alarm/localpushnotification.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:image_picker/image_picker.dart';
+
+DateTime scheduleTime = DateTime.now();
 
 class AddRemainderPge extends StatefulWidget {
   const AddRemainderPge({super.key});
@@ -35,7 +37,6 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
   @override
   void initState() {
     getEmailFromSharedpreference();
-    NotificationWidget.init();
     super.initState();
   }
 
@@ -294,6 +295,36 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                           checkColor: Colors.white,
                         ))),
                 const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () async {
+                    // DatePicker.showDateTimePicker(
+                    //   context,
+                    //   showTitleActions: true,
+                    //   onChanged: (date) => scheduleTime = date,
+                    //   onConfirm: (date) {},
+                    // );
+                    final TimeOfDay? timeOfDay = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(scheduleTime),
+                    );
+                    if (timeOfDay != null) {
+                      setState(() {
+                        DateTime selectedDateTime = DateTime(
+                          scheduleTime.year,
+                          scheduleTime.month,
+                          scheduleTime.day,
+                          timeOfDay.hour,
+                          timeOfDay.minute,
+                        );
+                        scheduleTime = selectedDateTime;
+                      });
+                    }
+                  },
+                  child: const Text(
+                    'Select Date Time',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
                 SizedBox(
                   width: size.width - 10,
                   child: ElevatedButton(
@@ -333,15 +364,12 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                                   context,
                                   'Medicine Reminder Successfully created',
                                   Colors.green);
-                              DateTime notificationTime =
-                                  DateTime.now().add(Duration(seconds: 5));
-                              await NotificationWidget.showNotification(
-                                id: 1,
-                                title: 'Scheduled Notification',
-                                body: 'This is a scheduled notification.',
-                                payload: 'custom payload',
-                                settime: notificationTime,
-                              );
+                              debugPrint(
+                                  'Notification Scheduled for $scheduleTime');
+                              NotificationService().scheduleNotification(
+                                  title: 'Scheduled Notification',
+                                  body: '$scheduleTime',
+                                  scheduledNotificationDateTime: scheduleTime);
                             } else {
                               showSnackBarImage(
                                   context, 'Not created', Colors.red);

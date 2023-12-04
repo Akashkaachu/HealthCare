@@ -112,12 +112,15 @@ class _MeasurementDisPageState extends State<MeasurementDisPage> {
                           }
                           return Expanded(
                             child: bloodPrsrList.isEmpty
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      LottieBuilder.asset(
-                                          "assets/animation/Animation - 1701342007210.json"),
-                                    ],
+                                ? SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        LottieBuilder.asset(
+                                            "assets/animation/Animation - 1701342007210.json"),
+                                      ],
+                                    ),
                                   )
                                 : ListView.builder(
                                     itemBuilder: (context, index) {
@@ -294,7 +297,8 @@ class _MeasurementDisPageState extends State<MeasurementDisPage> {
                           }
                           return Expanded(
                             child: SugarList.isEmpty
-                                ? LottieBuilder.asset("assets/animation/Animation - 1701342007210.json")
+                                ? LottieBuilder.asset(
+                                    "assets/animation/Animation - 1701342007210.json")
                                 : ListView.builder(
                                     itemCount: SugarList.length,
                                     itemBuilder: (context, index) {

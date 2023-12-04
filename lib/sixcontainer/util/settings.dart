@@ -321,6 +321,8 @@ void deleteAccount(
               onPressed: () async {
                 await deleteuser(email);
                 await deleteUserAccount(email);
+                SharedPreferenceClass.saveuserLoggedfun(false);
+                SharedPreferenceClass.saveuserEmailfun('');
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (context) => const SignPge(),

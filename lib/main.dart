@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthcare/alarm/localpushnotification.dart';
 import 'package:healthcare/model/bpmodel.dart';
 import 'package:healthcare/model/favoritemodel.dart';
 import 'package:healthcare/model/heightmodel.dart';
@@ -10,10 +11,13 @@ import 'package:healthcare/model/storeimgpdfmodel.dart';
 import 'package:healthcare/model/weightmodel.dart';
 import 'package:healthcare/splash.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
   if (!Hive.isAdapterRegistered(PatientsDetailsAdapter().typeId)) {
     Hive.registerAdapter(PatientsDetailsAdapter());
   }
