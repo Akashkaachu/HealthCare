@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:healthcare/alarm/localpushnotification.dart';
 import 'package:healthcare/model/bpmodel.dart';

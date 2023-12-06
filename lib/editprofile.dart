@@ -1,3 +1,5 @@
+// ignore_for_file: body_might_complete_normally_nullable, annotate_overrides
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -214,7 +216,7 @@ class _EditProfilePgeState extends State<EditProfilePge> {
                                       Navigator.of(context).pushAndRemoveUntil(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                BottomNavigatorBar(),
+                                                const BottomNavigatorBar(),
                                           ),
                                           (route) => false);
                                     } else {

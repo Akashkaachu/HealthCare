@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, curly_braces_in_flow_control_structures, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/homescreen.dart';
@@ -15,6 +17,7 @@ import 'package:healthcare/signup.dart';
 import 'package:healthcare/sixcontainer/addremainder.dart';
 import 'package:healthcare/sixcontainer/measure_util/measure.dart';
 import 'package:healthcare/sixcontainer/patient.dart';
+import 'package:healthcare/sixcontainer/util/signuputil.dart';
 import 'package:hive_flutter/adapters.dart';
 
 Future<void> addPatientDetails(PatientsDetails rogi) async {
@@ -198,7 +201,7 @@ Future<void> addSugarLevelDetails(
 Future<List<HeightModelClass>> getSugarLevelDeatails(String email) async {
   List<HeightModelClass> gettedHeightDtls = [];
   final box = await Hive.openBox<HeightModelClass>("sugarBox");
-  final HeightDatas = await box.values.toList();
+  final HeightDatas = box.values.toList();
   for (var i in HeightDatas) {
     if (i.email == email) {
       gettedHeightDtls.add(i);
@@ -214,20 +217,18 @@ Future<void> addWeightDetails(
   final index = await box.add(weight);
   if (index >= 0) {
     strdGetWeight(email!);
-    // ignore: use_build_context_synchronously
+
     showSnackBarImage(
         context, "The weight is successfully added", Colors.green);
   } else {
-    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Weight is already exist", Colors.red);
   }
 }
 
 Future<List<WeightClassModel>> getWeightStrDetails(String email) async {
-  // ignore: non_constant_identifier_names
   List<WeightClassModel> StoredWeightDtls = [];
   final box = await Hive.openBox<WeightClassModel>('WeightBox');
-  // ignore: non_constant_identifier_names
+
   final WeightDatas = box.values.toList();
   for (var i in WeightDatas) {
     if (i.email == email) {
@@ -243,11 +244,9 @@ Future<void> addFolderPatientRecDetails(
   final box = await Hive.openBox<PdfPatientClassModel>("pdfPateintRecBox");
   final index = await box.add(pdfCreate);
   if (index >= 0) {
-    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Folder Seccessfully added", Colors.green);
     clearTxt();
   } else {
-    // ignore: use_build_context_synchronously
     showSnackBarImage(context, 'Folder Already Exist', Colors.red);
   }
 }
@@ -275,10 +274,8 @@ Future<void> addImagePdfTypes(
   final box = await Hive.openBox<StoreImgPdfClassModel>("ImagePdfBox");
   final index = await box.add(imgpdf);
   if (index >= 0) {
-    // ignore: use_build_context_synchronously
     showSnackBarImage(context, "Successfully saved", Colors.green);
   } else {
-    // ignore: use_build_context_synchronously
     showSnackBarImage(context, 'Invalid Pdf', Colors.red);
   }
 }

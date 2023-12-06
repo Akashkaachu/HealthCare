@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, use_key_in_widget_constructors, prefer_typing_uninitialized_variables, library_private_types_in_public_api, sized_box_for_whitespace, deprecated_member_use, unnecessary_string_interpolations
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +10,7 @@ import 'package:healthcare/sixcontainer/addremainder.dart';
 import 'package:intl/intl.dart';
 
 class BloodPressurePage extends StatefulWidget {
-  BloodPressurePage({Key? key}) : super(key: key);
+  const BloodPressurePage({Key? key}) : super(key: key);
 
   @override
   State<BloodPressurePage> createState() => _BloodPressurePageState();
@@ -297,7 +299,7 @@ class BloodPressureScaleItem extends StatefulWidget {
   final double scaleFactor;
   final int secondInitialValue;
 
-  BloodPressureScaleItem({
+  const BloodPressureScaleItem({
     required this.label,
     required this.initialValue,
     required this.scaleFactor,
@@ -416,7 +418,7 @@ Future<List<Map<String, dynamic>>> graphFutureFun() async {
 }
 
 class ShowBottumSheet extends StatefulWidget {
-  ShowBottumSheet({
+  const ShowBottumSheet({
     super.key,
     required this.size,
   });
@@ -536,7 +538,6 @@ class _ShowBottumSheetState extends State<ShowBottumSheet> {
                         ),
                         const SizedBox(width: 50),
                         Text(
-                          // ignore: unnecessary_string_interpolations
                           "${DateFormat.jm().format(selectedTime)}",
                           style: GoogleFonts.poppins(
                               color: Colors.black,
@@ -570,7 +571,7 @@ class _ShowBottumSheetState extends State<ShowBottumSheet> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(

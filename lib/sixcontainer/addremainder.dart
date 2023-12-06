@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use, unnecessary_string_interpolations, use_key_in_widget_constructors
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,7 +7,9 @@ import 'package:healthcare/alarm/localpushnotification.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/medicalmodel.dart';
+import 'package:healthcare/sixcontainer/measure_util/bp.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 DateTime scheduleTime = DateTime.now();
 
@@ -26,7 +30,7 @@ bool isChoice = false;
 String? groupValue;
 final TextEditingController medicineNameEditingController =
     TextEditingController();
-
+TextEditingController dateTimeController = TextEditingController();
 final formkey = GlobalKey<FormState>();
 List<String> selectedDays = [];
 bool isExpand = false;
@@ -54,7 +58,7 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
         appBar: AppBar(
           backgroundColor: const Color(0xff7a73e7),
           title: Text(
-            "Medicine Remainder",
+            "Medicine Remainder".toUpperCase(),
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 23,
@@ -295,36 +299,104 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                           checkColor: Colors.white,
                         ))),
                 const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () async {
-                    // DatePicker.showDateTimePicker(
-                    //   context,
-                    //   showTitleActions: true,
-                    //   onChanged: (date) => scheduleTime = date,
-                    //   onConfirm: (date) {},
-                    // );
-                    final TimeOfDay? timeOfDay = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(scheduleTime),
-                    );
-                    if (timeOfDay != null) {
-                      setState(() {
-                        DateTime selectedDateTime = DateTime(
-                          scheduleTime.year,
-                          scheduleTime.month,
-                          scheduleTime.day,
-                          timeOfDay.hour,
-                          timeOfDay.minute,
-                        );
-                        scheduleTime = selectedDateTime;
-                      });
-                    }
-                  },
-                  child: const Text(
-                    'Select Date Time',
-                    style: TextStyle(color: Colors.blue),
+                //
+                SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Choose Date",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(width: 50),
+                            Text(
+                              "${formate.format(selectedDate)}",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          final DateTime? dateTime = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1980),
+                              lastDate: DateTime.now());
+                          if (dateTime != null) {
+                            setState(() {
+                              selectedDate = dateTime;
+                            });
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
+                SizedBox(
+                  // width: widget.size.width,
+                  // height: ((widget.size.height / 2) / 2) / 2 - 30,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Choose Time     ",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(width: 50),
+                            Text(
+                              "${DateFormat.jm().format(selectedTime)}",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          final TimeOfDay? timeOfDay = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(selectedTime),
+                          );
+
+                          if (timeOfDay != null) {
+                            final DateTime selectedDateTime = DateTime(
+                              selectedDate.year,
+                              selectedDate.month,
+                              selectedDate.day,
+                              timeOfDay.hour,
+                              timeOfDay.minute,
+                            );
+
+                            setState(() {
+                              scheduleTime = selectedDateTime;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
                 SizedBox(
                   width: size.width - 10,
                   child: ElevatedButton(
@@ -367,15 +439,18 @@ class _AddRemainderPgeState extends State<AddRemainderPge> {
                               debugPrint(
                                   'Notification Scheduled for $scheduleTime');
                               NotificationService().scheduleNotification(
-                                  title: 'Scheduled Notification',
-                                  body: '$scheduleTime',
+                                  title: (medicineNameEditingController.text),
+                                  body: DateFormat('dd MMM yyyy')
+                                      .format(scheduleTime),
                                   scheduledNotificationDateTime: scheduleTime);
                             } else {
                               showSnackBarImage(
                                   context, 'Not created', Colors.red);
                             }
                             clearAllFeild();
+
                             Navigator.of(context).pop();
+
                             Navigator.of(context).pop();
                           }
                         }
@@ -436,7 +511,7 @@ class ChoiceChipsWidgets extends StatefulWidget {
   final String text;
   final List<String> selectedDays;
 
-  ChoiceChipsWidgets({
+  const ChoiceChipsWidgets({
     required this.text,
     required this.selectedDays,
   });
@@ -466,7 +541,6 @@ class _ChoiceChipsWidgetsState extends State<ChoiceChipsWidgets> {
           } else {
             widget.selectedDays.remove(widget.text);
           }
-          print(widget.selectedDays);
         });
       },
     );

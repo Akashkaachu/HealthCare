@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/homescreen.dart';
@@ -66,7 +68,7 @@ class _DeseaseComPgeState extends State<DeseaseComPge> {
                   ListOfDisease(
                     size: size,
                     img: "assets/images/HIV2.jpg",
-                    text: "CANCER",
+                    text: "HIV",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const DisplayFirstAidScrn(
@@ -216,7 +218,6 @@ class _DeseaseComPgeState extends State<DeseaseComPge> {
   }
 }
 
-// ignore: must_be_immutable
 class ListOfDisease extends StatelessWidget {
   ListOfDisease(
       {super.key,

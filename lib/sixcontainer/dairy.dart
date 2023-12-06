@@ -1,3 +1,5 @@
+// ignore_for_file: override_on_non_overriding_member, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';

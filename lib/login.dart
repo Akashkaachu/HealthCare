@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/hive/hive.dart';
-import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/signup.dart';
 
 class SignPge extends StatefulWidget {
@@ -11,9 +10,7 @@ class SignPge extends StatefulWidget {
   State<SignPge> createState() => _SignPgeState();
 }
 
-// ignore: non_constant_identifier_names
 final TextEditingController emailEditingController = TextEditingController();
-// ignore: non_constant_identifier_names
 final TextEditingController passwordEditingController = TextEditingController();
 final formkey = GlobalKey<FormState>();
 bool obscureText = true;

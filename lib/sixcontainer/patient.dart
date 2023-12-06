@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -183,7 +185,6 @@ class _PatientRecPgeState extends State<PatientRecPge> {
                 actions: [
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        // ignore: deprecated_member_use
                         primary: const Color(
                             0xff7a73e7), // Change this to your desired background color
                       ),

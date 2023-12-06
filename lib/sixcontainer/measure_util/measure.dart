@@ -79,7 +79,7 @@ class _MeasurePgeState extends State<MeasurePge> {
               backgroundColor: Colors.amber,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => BloodPressurePage(),
+                  builder: (context) => const BloodPressurePage(),
                 ));
               }),
           SpeedDialChild(

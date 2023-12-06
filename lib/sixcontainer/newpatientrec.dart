@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, sized_box_for_whitespace, body_might_complete_normally_nullable
+
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

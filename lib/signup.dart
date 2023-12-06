@@ -5,16 +5,15 @@ import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/homescreen.dart';
 import 'package:healthcare/login.dart';
 import 'package:healthcare/model/patientmodel.dart';
+import 'package:healthcare/sixcontainer/util/signuputil.dart';
 
 class SignUpPge extends StatefulWidget {
   const SignUpPge({super.key});
-
   @override
   State<SignUpPge> createState() => _SignUpPgeState();
 }
 
 final formkey = GlobalKey<FormState>();
-
 final TextEditingController nameEditingController = TextEditingController();
 final TextEditingController emailEditingController = TextEditingController();
 final TextEditingController passwordEditingController = TextEditingController();
@@ -48,26 +47,22 @@ class _SignUpPgeState extends State<SignUpPge> {
                   Padding(
                     padding:
                         const EdgeInsets.only(top: 50, left: 75, right: 75),
-                    child: Image.asset(
-                      "assets/images/Medical care-rafiki.png",
-                      width: size.width + 900,
-                      height: size.height / 2 - 200,
-                    ),
+                    child: Image.asset("assets/images/Medical care-rafiki.png",
+                        width: size.width + 900, height: size.height / 2 - 200),
                   ),
                   TextFormfld(
-                    icons1: Icons.person,
-                    label: "Name",
-                    controller: nameEditingController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Enter your Name";
-                      } else if (value.length < 3) {
-                        return "Enter Atleast 3 Charecters";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
+                      icons1: Icons.person,
+                      label: "Name",
+                      controller: nameEditingController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter your Name";
+                        } else if (value.length < 3) {
+                          return "Enter Atleast 3 Charecters";
+                        } else {
+                          return null;
+                        }
+                      }),
                   TextFormfld(
                       validator: (val) {
                         return RegExp(
@@ -153,7 +148,6 @@ class _SignUpPgeState extends State<SignUpPge> {
                                 "Please Check both Password and Confirm Password");
                           }
                         }
-                        // clearAllSignUpFld();
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color?>(
@@ -207,58 +201,4 @@ class _SignUpPgeState extends State<SignUpPge> {
       cpasswordEditingController.clear();
     });
   }
-}
-
-class TextFormfld extends StatelessWidget {
-  const TextFormfld(
-      {super.key,
-      required this.icons1,
-      required this.label,
-      required this.controller,
-      required this.validator,
-      this.icons2,
-      this.obscure = false,
-      this.onpress,
-      this.keybrd});
-  final IconData icons1;
-  final IconData? icons2;
-  final String label;
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final bool obscure;
-  final void Function()? onpress;
-  final TextInputType? keybrd;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: TextFormField(
-        cursorColor: Colors.black,
-        obscureText: obscure,
-        controller: controller,
-        validator: validator,
-        keyboardType: keybrd,
-        decoration: InputDecoration(
-          suffixIcon: IconButton(
-            onPressed: onpress,
-            icon: Icon(icons2),
-          ),
-          prefixIcon: Icon(
-            icons1,
-            color: const Color(0xff7a73e7),
-          ),
-          label: Text(label),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-    );
-  }
-}
-
-void showSnackBar(BuildContext context, Color Color, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Text(message),
-    backgroundColor: Color,
-    duration: const Duration(seconds: 5),
-  ));
 }

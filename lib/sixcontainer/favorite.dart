@@ -1,12 +1,12 @@
+// ignore_for_file: non_constant_identifier_names, avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/favoritemodel.dart';
-import 'package:healthcare/model/pdfpatientrecorder.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/sixcontainer/newpatientrec.dart';
-import 'package:healthcare/sixcontainer/patient.dart';
 
 class FavoratePge extends StatefulWidget {
   const FavoratePge({super.key});

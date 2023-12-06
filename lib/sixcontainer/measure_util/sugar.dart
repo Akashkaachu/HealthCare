@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, prefer_typing_uninitialized_variables, unnecessary_string_interpolations, deprecated_member_use, sized_box_for_whitespace, use_build_context_synchronously
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -353,7 +355,7 @@ Future<List<Map<String, dynamic>>> graphHeight() async {
 }
 
 class ShowBottumHeightSheet extends StatefulWidget {
-  ShowBottumHeightSheet({
+  const ShowBottumHeightSheet({
     super.key,
     required this.size,
   });
@@ -449,7 +451,6 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                         setState(() {
                           selectedDate = dateTime;
                         });
-                        print(selectedDate);
                       }
                     },
                   ),
@@ -477,7 +478,6 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                         ),
                         const SizedBox(width: 50),
                         Text(
-                          // ignore: unnecessary_string_interpolations
                           "${DateFormat.jm().format(selectedTime)}",
                           style: GoogleFonts.poppins(
                               color: Colors.black,
@@ -545,21 +545,6 @@ class _ShowBottumHeightSheetState extends State<ShowBottumHeightSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Row(
-            //       children: [
-            //         BloodPressureScaleItem(
-            //             label: 'h ',
-            //             initialValue: 120,
-            //             secondInitialValue: 80,
-            //             scaleFactor: 1.2),
-            //       ],
-            //     ),
-            //   ],
-            // ),
             const SizedBox(height: 55),
             SizedBox(
                 width: widget.size.width - 30,

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, avoid_print, sort_child_properties_last, use_build_context_synchronously, must_be_immutable, deprecated_member_use
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -58,7 +60,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             color: const Color(0xff7a73e7).withOpacity(0.6),
             width: size.width,
-            // height: size.height,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 2, right: 2, top: 160),
@@ -175,10 +176,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                                                   .text);
                                                   updateChangingPassword(
                                                       key, updatedmodel);
-                                                  // ignore: use_build_context_synchronously
+
                                                   Navigator.pop(context);
                                                   changePasswordEditingController
                                                       .clear();
+
                                                   showSnackBarImage(
                                                       context,
                                                       "Passoword successfully Updated",
@@ -200,22 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ]),
                                     ),
                                   );
-                                }
-                                // shape: const RoundedRectangleBorder(
-                                //     borderRadius: BorderRadius.only(
-                                //   topLeft: Radius.circular(20.0),
-                                //   topRight: Radius.circular(20.0),
-                                // )),
-                                // context: context,
-                                // builder: (context) {
-                                //   return Container(
-                                //     height: 250,
-                                //     decoration: const BoxDecoration(
-                                //       color: Colors.amber,
-                                //     ),
-                                //   );
-                                // },
-                                );
+                                });
                           },
                           title: 'Change password',
                           leading: Icons.key,
@@ -268,20 +255,6 @@ class SettingWidgets extends StatelessWidget {
     );
   }
 }
-
-// Future<void> launchPlayStore() async {
-//   const String packageName =
-//       'in.medibuddy'; // Replace with your app's package name
-//   const String url = 'market://details?id=$packageName';
-
-//   // ignore: deprecated_member_use
-//   if (await canLaunch(url)) {
-//     // ignore: deprecated_member_use
-//     await launch(url);
-//   } else {
-//     print('Could not launch Play Store');
-//   }
-// }
 
 //rate Us
 Future<void> launchAmazonApp() async {

@@ -1,3 +1,5 @@
+// ignore_for_file: must_call_super
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -130,14 +132,6 @@ class _ReminderPageState extends State<ReminderPage> {
     });
     displayReminderList(useremail!);
   }
-
-  // void displaystoredremainderdata() async {
-  //   final value = await getMedicineDetails(useremail!);
-  //   setState(() {
-  //     remiderlist = value;
-  //     //  print(remiderlist.length);
-  //   });
-  // }
 }
 
 int getKeyOfReminder(MedicalRemainder reminder) {
@@ -163,7 +157,7 @@ void alertReminder(
           ElevatedButton(
               onPressed: () async {
                 int key = getKeyOfReminder(medReminderModel);
-                print(key);
+
                 await deleteReminder(key);
                 await displayReminderList(useremail);
                 Navigator.pop(context);
