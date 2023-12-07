@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, annotate_overrides, non_constant_identifier_names, avoid_print, prefer_typing_uninitialized_variables, sized_box_for_whitespace, deprecated_member_use, unnecessary_string_interpolations, prefer_const_constructors, use_build_context_synchronously
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -357,7 +357,7 @@ Future<List<Map<String, dynamic>>> graphPulseFunc() async {
 }
 
 class ShowBottumSheetTwo extends StatefulWidget {
-  ShowBottumSheetTwo({
+  const ShowBottumSheetTwo({
     super.key,
     required this.size,
   });
@@ -478,7 +478,6 @@ class _ShowBottumSheetTwoState extends State<ShowBottumSheetTwo> {
                         ),
                         const SizedBox(width: 50),
                         Text(
-                          // ignore: unnecessary_string_interpolations
                           "${DateFormat.jm().format(selectedTime)}",
                           style: GoogleFonts.poppins(
                               color: Colors.black,

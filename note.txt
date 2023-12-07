@@ -94,4 +94,9 @@
                       },
                       itemCount: WeightList.length,
                     );
-                  })),
+                  })), 
+                  
+                   final Uri url = Uri.parse(widget.siteUrl);
+                      if (!await launchUrl(url)) {
+                        throw Exception('could not lauch');
+                      }

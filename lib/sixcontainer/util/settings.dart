@@ -10,6 +10,7 @@ import 'package:healthcare/login.dart';
 import 'package:healthcare/model/patientmodel.dart';
 import 'package:healthcare/profilepge.dart';
 import 'package:healthcare/sixcontainer/util/feedback.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -106,10 +107,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             trailing: Icons.arrow_right),
                         SettingWidgets(
                             onTap: () {
-                              launchAmazonApp();
+                              Share.share(
+                                  ' Please Visit https://play.google.com/store/apps/details?id=com.healthifyme.basic',
+                                  subject: "Health Care App");
                             },
-                            title: 'Rate Us',
-                            leading: Icons.star_half,
+                            title: 'Share Application',
+                            leading: Icons.share,
                             trailing: Icons.arrow_right),
                         SettingWidgets(
                           onTap: () {
@@ -208,6 +211,16 @@ class _SettingsPageState extends State<SettingsPage> {
                           leading: Icons.key,
                           // trailing: Icons.add_location_outlined
                         ),
+                        SettingWidgets(
+                            onTap: () async {
+                              final Uri url = Uri.parse(
+                                  'https://sites.google.com/view/my-health-care-privacy-policy/home');
+                              if (!await launchUrl(url)) {
+                                throw Exception('could not lauch');
+                              }
+                            },
+                            leading: Icons.privacy_tip,
+                            title: 'Privacy Policy'),
                         SettingWidgets(
                           onTap: () {
                             deleteAccount(context, email!);

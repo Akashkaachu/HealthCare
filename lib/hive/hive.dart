@@ -31,7 +31,7 @@ Future<PatientsDetails?> getPatientsDetails(String email) async {
   final patients = box.values.toList();
   for (PatientsDetails i in patients) {
     if (i.email == email) {
-      print(i.name);
+      (i.name);
       return i;
     }
   }
@@ -97,12 +97,11 @@ Future<void> updateReminderInHive(MedicalRemainder reminder, int key) async {
   await box.put(key, reminder); // Using the key to update the object in Hive
 }
 
-void editAllfieldInRemainderInHive(
-    int index, MedicalRemainder updatedReminder) async {
+void editAllfieldInRemainderInHive(int index, MedicalRemainder reminder) async {
   try {
     final box = await Hive.openBox<MedicalRemainder>('medicalReminders');
     if (box.containsKey(index)) {
-      await box.put(index, updatedReminder);
+      await box.put(index, reminder);
       // Close the box after the update
       await box.close();
     } else {

@@ -1,13 +1,17 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_string_interpolations, deprecated_member_use, avoid_print, use_key_in_widget_constructors
 
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthcare/alarm/localpushnotification.dart';
 import 'package:healthcare/helper/sharedpreference.dart';
 import 'package:healthcare/hive/hive.dart';
 import 'package:healthcare/model/medicalmodel.dart';
 import 'package:healthcare/remindernew.dart';
+import 'package:healthcare/sixcontainer/addremainder.dart';
+import 'package:healthcare/sixcontainer/measure_util/bp.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class EditReminderPge extends StatefulWidget {
   const EditReminderPge(
@@ -302,6 +306,102 @@ class _EditReminderPgeState extends State<EditReminderPge> {
                           activeColor: const Color(0xff7a73e7),
                           checkColor: Colors.white,
                         ))),
+                SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Choose Date",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(width: 50),
+                            Text(
+                              "${formate.format(selectedDate)}",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          final DateTime? dateTime = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1980),
+                              lastDate: DateTime.now());
+                          if (dateTime != null) {
+                            setState(() {
+                              selectedDate = dateTime;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  // width: widget.size.width,
+                  // height: ((widget.size.height / 2) / 2) / 2 - 30,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Choose Time     ",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(width: 50),
+                            Text(
+                              "${DateFormat.jm().format(selectedTime)}",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          final TimeOfDay? timeOfDay = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(selectedTime),
+                          );
+
+                          if (timeOfDay != null) {
+                            final DateTime selectedDateTime = DateTime(
+                              selectedDate.year,
+                              selectedDate.month,
+                              selectedDate.day,
+                              timeOfDay.hour,
+                              timeOfDay.minute,
+                            );
+
+                            setState(() {
+                              scheduleTime = selectedDateTime;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: size.width - 10,
@@ -311,7 +411,8 @@ class _EditReminderPgeState extends State<EditReminderPge> {
                       Color(0xff7a73e7),
                     )),
                     onPressed: () async {
-                      updateReminderDatas(context, widget.index);
+                      updateReminderDatas(
+                          context, widget.index, widget.medicalRemainder);
                       Navigator.of(context).pop(MaterialPageRoute(
                         builder: (context) => const ReminderPage(),
                       ));
@@ -347,7 +448,7 @@ class _EditReminderPgeState extends State<EditReminderPge> {
     setState(() {
       groupValue = value;
     });
-    // ignore: avoid_print
+
     print(groupValue);
   }
 
@@ -364,7 +465,7 @@ class ChoiceChipsWidgets extends StatefulWidget {
   final String text;
   final List<String> selectedDays;
 
-  ChoiceChipsWidgets({
+  const ChoiceChipsWidgets({
     required this.text,
     required this.selectedDays,
   });
@@ -463,7 +564,8 @@ void showSnackBarImage(BuildContext c, String content, Color color) {
   ));
 }
 
-void updateReminderDatas(BuildContext c, int index) async {
+void updateReminderDatas(
+    BuildContext c, int index, MedicalRemainder previousremindermodel) async {
   if (formkey.currentState!.validate()) {
     if (groupValue == null || selectedDays.isEmpty || medSelectedImge == null) {
       showSnackBarImage(c, "Please Select all options", Colors.redAccent);
@@ -483,8 +585,17 @@ void updateReminderDatas(BuildContext c, int index) async {
         afternoonDose: _ischeckedTwo,
         eveningDose: _ischeckedThree,
       );
-      editAllfieldInRemainderInHive(index, updatedReminder);
+      final key = getKeyOfReminder(previousremindermodel);
+      await updateReminderInHive(updatedReminder, key);
+
+      showSnackBarImage(
+          c, 'Medicine Reminder Successfully updated', Colors.green);
+      debugPrint('Notification Scheduled for $scheduleTime');
+      NotificationService().scheduleNotification(
+          title: (medicineNameEditingController.text),
+          body: DateFormat('dd MMM yyyy').format(scheduleTime),
+          scheduledNotificationDateTime: scheduleTime);
     }
   }
 }
-/// Edit Medicine Reminder
+///E d i t M e d i c i n e R e m i n d e r
