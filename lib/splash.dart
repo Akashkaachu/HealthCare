@@ -37,7 +37,7 @@ class _SplashScrnState extends State<SplashScrn> {
               "assets/images/Virustransmission-pana.png",
             ),
           ),
-          Text("Welcome to \nHEALTHCARE ❤️",
+          Text("Welcome to \n MY HEALTH CARE ❤️",
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                   fontSize: 30, fontWeight: FontWeight.bold)),
